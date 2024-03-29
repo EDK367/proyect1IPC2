@@ -8,6 +8,8 @@ For further reference, please consider the following sections:
 * [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.2.4/maven-plugin/reference/html/#build-image)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/3.2.4/reference/htmlsingle/index.html#web)
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/3.2.4/reference/htmlsingle/index.html#data.sql.jpa-and-spring-data)
+* [Rest Repositories](https://docs.spring.io/spring-boot/docs/3.2.4/reference/htmlsingle/index.html#howto.data-access.exposing-spring-data-repositories-as-rest)
+* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/3.2.4/reference/htmlsingle/index.html#using.devtools)
 
 ### Guides
 The following guides illustrate how to use some features concretely:
@@ -17,4 +19,7 @@ The following guides illustrate how to use some features concretely:
 * [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
 * [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
+* [Accessing JPA Data with REST](https://spring.io/guides/gs/accessing-data-rest/)
+* [Accessing Neo4j Data with REST](https://spring.io/guides/gs/accessing-neo4j-data-rest/)
+* [Accessing MongoDB Data with REST](https://spring.io/guides/gs/accessing-mongodb-data-rest/)
 
