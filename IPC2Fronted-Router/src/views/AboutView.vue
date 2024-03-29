@@ -5,9 +5,10 @@
     <button @click="login = 'recepcionista'">Recepcionista</button>
     <button @click="login = 'operador'">Operador</button>
     <button @click="login = 'admin'">Administrador</button>
-    <component :is="login"></component>
+    <transition name="animation" mode="out-in">
+    <component :is="login" :key="login"></component>
+    </transition>
  </div>
-
 </div>
 </template>
 
@@ -82,4 +83,25 @@ button:hover {
   transition: transform 0.5s;
   color: black;
 }
+
+.animation-enter-active {
+  transition: opacity 1.5s ease-in-out, transform 1s ease-in-out;
+}
+
+.animation-leave-active {
+  transition: opacity 1.5s ease-in-out, transform 1s ease-in-out;
+}
+
+.animation-enter, .animation-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.animation-enter-to, .animation-leave {
+  opacity: 1;
+  transition: all 1s ease;
+  transform: translateY(-5px);
+}
+
+
 </style>

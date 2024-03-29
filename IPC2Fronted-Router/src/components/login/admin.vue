@@ -12,6 +12,7 @@
       Mostrar Contraseña
       <br><br>
        <nav class="button" :class="{ 'disabled': !isFormValid }">
+        
          <router-link v-if="isFormValid" :to="{ path: '/admin' }" class="link">
            Iniciar Sesion
          </router-link>
