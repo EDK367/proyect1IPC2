@@ -63,10 +63,8 @@ components: {
   
 }
 button {
-  margin: 100px;
-  display: ruby-base-container;
-  width: 25%;
-  max-width: 100px;
+  display: inline-block;
+  max-width: auto;
   padding: 10px;
   background-color: #007BFF;
   color: white;
