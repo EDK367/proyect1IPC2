@@ -56,30 +56,33 @@ public class controllerOperador extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        doOptions(request, response);
         String op = (request.getParameter("op") != null) ? request.getParameter("op") : "list";
 
         if (op.equals("list")) {
-            ArrayList<operadores> listOP = new ArrayList<>();
+            ArrayList<operadores> listOperador = new ArrayList<>();
+            conexionData data = new conexionData();
+            Connection connection = data.conectar();
 
-            connection = data.conectar();
             try {
                 String sql = "select * from operador";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    operadores operador = new operadores();
-                    operador.setCuiOperador(rs.getInt("cui_operador"));
-                    operador.setNombre(rs.getString("nombre"));
-                    operador.setApellido(rs.getString("apellido"));
-                    operador.setCorreo(rs.getString("correo"));
-                    operador.setContraseña(rs.getString("contraseña"));
-
-                    listOP.add(operador);
+                    operadores operadores = new operadores();
+                    operadores.setCuiOperador(rs.getLong("cui_operador"));
+                    operadores.setNombre(rs.getString("nombre"));
+                    operadores.setApellido(rs.getString("apellido"));
+                    operadores.setCorreo(rs.getString("correo"));
+                    operadores.setContraseña(rs.getString("contraseña"));
+                    operadores.setIdTrabajador(rs.getInt("idTrabajador"));
+                    listOperador.add(operadores);
                 }
 
                 // Convertir la lista a JSON
-                String json = gson.toJson(listOP);
+                Gson gson = new Gson();
+                String json = gson.toJson(listOperador);
 
                 // Responde con el Json
                 response.setContentType("application/json");
@@ -88,7 +91,7 @@ public class controllerOperador extends HttpServlet {
                 out.print(json);
                 out.flush();
             } catch (SQLException ex) {
-                response.getWriter().print("Error en la lista" + ex);
+                response.getWriter().print("Error en la lista");
             } finally {
                 data.desconectar();
             }
@@ -104,8 +107,7 @@ public class controllerOperador extends HttpServlet {
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
 
         // Acceder a los valores del JSON
-        int cuiOperador = objeto.get("cuiOperador").getAsInt();
-
+        long cuiOperador = objeto.get("cuiOperador").getAsLong();
         String nombre = objeto.get("nombre").getAsString();
         String apellido = objeto.get("apellido").getAsString();
         String correo = objeto.get("correo").getAsString();
@@ -120,29 +122,39 @@ public class controllerOperador extends HttpServlet {
 
 
         ResultSet rsVerification = null;
+
         try {
             connection = data.conectar();
             String sqlVerification = "SELECT * FROM administrador WHERE cui_admin = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
-            psVerification.setInt(1, cuiOperador);
+            psVerification.setLong(1, cuiOperador);
             rsVerification = psVerification.executeQuery();
 
             if (rsVerification.next()) {
-                response.getWriter().print(rsVerification + "si existe");
+                response.getWriter().print("este cui ya existe");
             } else {
 
-                String sql = "INSERT INTO operador(cui_operador, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
+                String sqlCorreo = "SELECT * FROM administrador WHERE correo = ?";
+                PreparedStatement psCorreo = connection.prepareStatement(sqlCorreo);
+                psCorreo.setString(1, correo);
+                rsVerification = psCorreo.executeQuery();
+
+                if (rsVerification.next()) {
+                    response.getWriter().print("Ya existe un correo registrado");
+                } else {
+                    String sql = "INSERT INTO operador(cui_operador, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setInt(1, newOperador.getCuiOperador());
+                ps.setLong(1, newOperador.getCuiOperador());
                 ps.setString(2, newOperador.getNombre());
                 ps.setString(3, newOperador.getApellido());
                 ps.setString(4, newOperador.getCorreo());
                 ps.setString(5, newOperador.getContraseña());
                 ps.executeUpdate();
                 response.getWriter().print("SI se actualizo" + newOperador);
+                }
             }
         } catch (SQLException ex) {
-            response.getWriter().print("No se pudo crear por saber que error ");
+            response.getWriter().print("Date duplicate, cui or gmail " + ex);
         } catch (ClassNotFoundException ex) {
             response.getWriter().print("pura mamada del java");
         } finally {
@@ -158,7 +170,7 @@ public class controllerOperador extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doOptions(request, response);
-        Gson gson = new Gson();
+
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
         
         int cuiOperador = objeto.get("cuiOperador").getAsInt();
@@ -166,7 +178,7 @@ public class controllerOperador extends HttpServlet {
             connection = data.conectar();
             String sql = "DELETE FROM operador WHERE cui_operador = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, cuiOperador);
+            ps.setLong(1, cuiOperador);
             ps.executeUpdate();
             response.getWriter().print("SI se elimino");
         } catch (SQLException ex) {
@@ -177,6 +189,54 @@ public class controllerOperador extends HttpServlet {
             data.desconectar();
         }
         
+    }
+
+    @SneakyThrows
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doOptions(request, response);
+        Gson gson = new Gson();
+        JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+
+        long cuiOperador = objeto.get("cuiOperador").getAsLong();
+        String nombre = objeto.get("nombre").getAsString();
+        String apellido = objeto.get("apellido").getAsString();
+        String correo = objeto.get("correo").getAsString();
+        String contraseña = objeto.get("contraseña").getAsString();
+        int idTrabajador = objeto.get("idTrabajador").getAsInt();
+
+
+        try {
+            connection = data.conectar();
+            //verificacion si existe
+            String sqlVerification = "SELECT * FROM operador WHERE idTrabajador = ?";
+            PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
+            psVerification.setInt(1, idTrabajador);
+            ResultSet rs = psVerification.executeQuery();
+
+            if(rs.next()){
+                String sql = "UPDATE operador SET  cui_operador = ?, nombre = ?, apellido = ?, correo = ?, contraseña = ? WHERE idTrabajador = ?";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setLong(1, cuiOperador);
+                ps.setString(2, nombre);
+                ps.setString(3, apellido);
+                ps.setString(4, correo);
+                ps.setString(5, contraseña);
+                ps.setInt(6, idTrabajador);
+                ps.executeUpdate();
+                response.getWriter().print("Todo salio bien");
+            }else{
+                response.getWriter().print("No existe el cui");
+            }
+
+        } catch (SQLException ex) {
+            response.getWriter().print("No se pudo realizar la actualizacion, muy probablemente tenga datos repetidos " + ex);
+        } catch (ClassNotFoundException ex) {
+            response.getWriter().print("QUe hubo");
+        } finally {
+            data.desconectar();
+        }
     }
     
     

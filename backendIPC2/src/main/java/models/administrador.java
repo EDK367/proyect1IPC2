@@ -9,7 +9,11 @@ public class administrador {
 
     @Getter
     @Setter
-    private int cuiAdmin;
+    private long cuiAdmin;
+
+    @Getter
+    @Setter
+    private int idTrabajador;
 
     @Getter
     @Setter
@@ -27,12 +31,13 @@ public class administrador {
     @Setter
     private String contraseña;
 
-    public administrador(int cuiAdmin, String nombre, String apellido, String correo, String contraseña) {
+    public administrador(long cuiAdmin, String nombre, String apellido, String correo, String contraseña, int idTrabajador) {
         this.cuiAdmin = cuiAdmin;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.contraseña = contraseña;
+        this.idTrabajador = idTrabajador;
     }
 
     public administrador() {
