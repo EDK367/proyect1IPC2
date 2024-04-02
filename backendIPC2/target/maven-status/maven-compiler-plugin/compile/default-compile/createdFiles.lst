@@ -1,0 +1,8 @@
+models\operadores.class
+com\mycompany\backendipc2\JakartaRestConfiguration.class
+sevelts\controllerOperador.class
+com\mycompany\backendipc2\resources\JakartaEE10Resource.class
+models\administrador.class
+services\optiones.class
+sevelts\controllerPrincipal.class
+dataBase\conexionData.class
