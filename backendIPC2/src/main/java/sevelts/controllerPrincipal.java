@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package sevelts;
 
 import dataBase.conexionData;
@@ -24,11 +20,6 @@ import com.google.gson.JsonObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-/**
- *
- * @author denil
- */
 //@WebServlet(name = "controllerPrincipal", urlPatterns = {"/controllerPrincipal"})
 @WebServlet("/api/admin")
 public class controllerPrincipal extends HttpServlet {

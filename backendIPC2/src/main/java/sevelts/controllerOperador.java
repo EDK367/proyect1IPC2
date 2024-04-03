@@ -103,7 +103,6 @@ public class controllerOperador extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doOptions(request, response);
-        Gson gson = new Gson();
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
 
         // Acceder a los valores del JSON
@@ -173,7 +172,7 @@ public class controllerOperador extends HttpServlet {
 
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
         
-        int cuiOperador = objeto.get("cuiOperador").getAsInt();
+        long cuiOperador = objeto.get("cuiOperador").getAsLong();
         try {
             connection = data.conectar();
             String sql = "DELETE FROM operador WHERE cui_operador = ?";
