@@ -11,10 +11,6 @@ public class operadores {
 
     @Getter
     @Setter
-    private int idTrabajador;
-
-    @Getter
-    @Setter
     private String nombre;
 
     @Getter
@@ -30,13 +26,12 @@ public class operadores {
     private String contraseña;
 
 
-    public operadores(long cuiOperador, String nombre, String apellido, String correo, String contraseña, int idTrabajador) {
+    public operadores(long cuiOperador, String nombre, String apellido, String correo, String contraseña) {
         this.cuiOperador = cuiOperador;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.contraseña = contraseña;
-        this.idTrabajador = idTrabajador;
     }
 
     public operadores(){

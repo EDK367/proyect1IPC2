@@ -73,7 +73,6 @@ public class controllerPrincipal extends HttpServlet {
                     admin.setApellido(rs.getString("apellido"));
                     admin.setCorreo(rs.getString("correo"));
                     admin.setContraseña(rs.getString("contraseña"));
-                    admin.setIdTrabajador(rs.getInt("idTrabajador"));
                     listAdmin.add(admin);
                 }
 
@@ -173,22 +172,22 @@ public class controllerPrincipal extends HttpServlet {
         Gson gson = new Gson();
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
         
-        int idTrabajador = objeto.get("idTrabajador").getAsInt();
+        int cuiAdmin = objeto.get("cuiAdmin").getAsInt();
         
         conexionData data = new conexionData();
         Connection connection = null;
         
         try {
             connection = data.conectar();
-            String sql = "DELETE FROM administrador WHERE idTrabajador = ?";
+            String sql = "DELETE FROM administrador WHERE cui_admin = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, idTrabajador);
+            ps.setInt(1, cuiAdmin);
             ps.executeUpdate();
             response.getWriter().print("SI se elimino");
         } catch (SQLException ex) {
-            response.getWriter().print("que hubo");
+            response.getWriter().print("no se pudo eliminar " + ex);
         } catch (ClassNotFoundException e) {
-            response.getWriter().print("try de fount");
+            response.getWriter().print("Error inesperado " + e);
         } finally {
             data.desconectar();
         }
@@ -208,7 +207,6 @@ public class controllerPrincipal extends HttpServlet {
         String apellido = objeto.get("apellido").getAsString();
         String correo = objeto.get("correo").getAsString();
         String contraseña = objeto.get("contraseña").getAsString();
-        int idTrabajador = objeto.get("idTrabajador").getAsInt();
 
         conexionData data = new conexionData();
         Connection connection = null;
@@ -216,20 +214,19 @@ public class controllerPrincipal extends HttpServlet {
         try {
             connection = data.conectar();
             //verificacion si existe
-            String sqlVerification = "SELECT * FROM administrador WHERE idTrabajador = ?";
+            String sqlVerification = "SELECT * FROM administrador WHERE cui_admin = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
-            psVerification.setInt(1, idTrabajador);
+            psVerification.setLong(1, cuiAdmin);
             ResultSet rs = psVerification.executeQuery();
 
             if(rs.next()){
-                String sql = "UPDATE administrador SET  cui_admin = ?, nombre = ?, apellido = ?, correo = ?, contraseña = ? WHERE idTrabajador = ?";
+                String sql = "UPDATE administrador SET nombre = ?, apellido = ?, correo = ?, contraseña = ? WHERE cui_admin = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setLong(1, cuiAdmin);
-                ps.setString(2, nombre);
-                ps.setString(3, apellido);
-                ps.setString(4, correo);
-                ps.setString(5, contraseña);
-                ps.setInt(6, idTrabajador);
+                ps.setString(1, nombre);
+                ps.setString(2, apellido);
+                ps.setString(3, correo);
+                ps.setString(4, contraseña);
+                ps.setLong(5, cuiAdmin);
                 ps.executeUpdate();
                 response.getWriter().print("Todo salio bien");
             }else{

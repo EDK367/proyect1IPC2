@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -16,8 +17,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import models.administrador;
 import models.operadores;
+
+import static javax.swing.text.html.parser.DTDConstants.ID;
 
 @WebServlet("/api/operador")
 public class controllerOperador extends HttpServlet {
@@ -27,8 +31,7 @@ public class controllerOperador extends HttpServlet {
 
     Gson gson = new Gson();
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
@@ -45,8 +48,7 @@ public class controllerOperador extends HttpServlet {
     }
 
     @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization");
@@ -54,8 +56,7 @@ public class controllerOperador extends HttpServlet {
 
     @SneakyThrows
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doOptions(request, response);
         String op = (request.getParameter("op") != null) ? request.getParameter("op") : "list";
 
@@ -76,7 +77,6 @@ public class controllerOperador extends HttpServlet {
                     operadores.setApellido(rs.getString("apellido"));
                     operadores.setCorreo(rs.getString("correo"));
                     operadores.setContraseña(rs.getString("contraseña"));
-                    operadores.setIdTrabajador(rs.getInt("idTrabajador"));
                     listOperador.add(operadores);
                 }
 
@@ -100,8 +100,7 @@ public class controllerOperador extends HttpServlet {
 
     @SneakyThrows
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doOptions(request, response);
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
 
@@ -142,14 +141,14 @@ public class controllerOperador extends HttpServlet {
                     response.getWriter().print("Ya existe un correo registrado");
                 } else {
                     String sql = "INSERT INTO operador(cui_operador, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
-                PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setLong(1, newOperador.getCuiOperador());
-                ps.setString(2, newOperador.getNombre());
-                ps.setString(3, newOperador.getApellido());
-                ps.setString(4, newOperador.getCorreo());
-                ps.setString(5, newOperador.getContraseña());
-                ps.executeUpdate();
-                response.getWriter().print("SI se actualizo" + newOperador);
+                    PreparedStatement ps = connection.prepareStatement(sql);
+                    ps.setLong(1, newOperador.getCuiOperador());
+                    ps.setString(2, newOperador.getNombre());
+                    ps.setString(3, newOperador.getApellido());
+                    ps.setString(4, newOperador.getCorreo());
+                    ps.setString(5, newOperador.getContraseña());
+                    ps.executeUpdate();
+                    response.getWriter().print("SI se actualizo" + newOperador);
                 }
             }
         } catch (SQLException ex) {
@@ -166,12 +165,11 @@ public class controllerOperador extends HttpServlet {
 
     @SneakyThrows
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doOptions(request, response);
 
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
-        
+
         long cuiOperador = objeto.get("cuiOperador").getAsLong();
         try {
             connection = data.conectar();
@@ -187,13 +185,12 @@ public class controllerOperador extends HttpServlet {
         } finally {
             data.desconectar();
         }
-        
+
     }
 
     @SneakyThrows
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doOptions(request, response);
         Gson gson = new Gson();
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
@@ -203,29 +200,29 @@ public class controllerOperador extends HttpServlet {
         String apellido = objeto.get("apellido").getAsString();
         String correo = objeto.get("correo").getAsString();
         String contraseña = objeto.get("contraseña").getAsString();
-        int idTrabajador = objeto.get("idTrabajador").getAsInt();
 
-
+        ResultSet rsVerification = null;
         try {
             connection = data.conectar();
             //verificacion si existe
-            String sqlVerification = "SELECT * FROM operador WHERE idTrabajador = ?";
+            String sqlVerification = "SELECT * FROM operador WHERE cui_operador = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
-            psVerification.setInt(1, idTrabajador);
-            ResultSet rs = psVerification.executeQuery();
+            psVerification.setLong(1, cuiOperador);
+            rsVerification = psVerification.executeQuery();
 
-            if(rs.next()){
-                String sql = "UPDATE operador SET  cui_operador = ?, nombre = ?, apellido = ?, correo = ?, contraseña = ? WHERE idTrabajador = ?";
+            if (rsVerification.next()) {
+
+                String sql = "UPDATE operador SET  nombre = ?, apellido = ?, correo = ?, contraseña = ? WHERE cui_operador = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setLong(1, cuiOperador);
-                ps.setString(2, nombre);
-                ps.setString(3, apellido);
-                ps.setString(4, correo);
-                ps.setString(5, contraseña);
-                ps.setInt(6, idTrabajador);
+                ps.setString(1, nombre);
+                ps.setString(2, apellido);
+                ps.setString(3, correo);
+                ps.setString(4, contraseña);
+                ps.setLong(5, cuiOperador);
                 ps.executeUpdate();
                 response.getWriter().print("Todo salio bien");
-            }else{
+
+            } else {
                 response.getWriter().print("No existe el cui");
             }
 
@@ -234,11 +231,15 @@ public class controllerOperador extends HttpServlet {
         } catch (ClassNotFoundException ex) {
             response.getWriter().print("QUe hubo");
         } finally {
+            if (rsVerification != null) {
+                rsVerification.close();
+            }
             data.desconectar();
         }
     }
-    
-    
+
+
+
     @Override
     public String getServletInfo() {
         return "Short description";

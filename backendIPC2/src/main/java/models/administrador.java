@@ -1,7 +1,6 @@
 package models;
 
 
-import jakarta.ws.rs.GET;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,10 +9,6 @@ public class administrador {
     @Getter
     @Setter
     private long cuiAdmin;
-
-    @Getter
-    @Setter
-    private int idTrabajador;
 
     @Getter
     @Setter
@@ -31,13 +26,12 @@ public class administrador {
     @Setter
     private String contraseña;
 
-    public administrador(long cuiAdmin, String nombre, String apellido, String correo, String contraseña, int idTrabajador) {
+    public administrador(long cuiAdmin, String nombre, String apellido, String correo, String contraseña) {
         this.cuiAdmin = cuiAdmin;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.contraseña = contraseña;
-        this.idTrabajador = idTrabajador;
     }
 
     public administrador() {

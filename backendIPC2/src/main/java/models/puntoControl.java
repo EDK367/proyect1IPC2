@@ -17,6 +17,7 @@ public class puntoControl {
     @Setter
     private  long cuiOperador;
 
+
     public puntoControl(int IdControl, String nombre, long cuiOperador) {
         this.IdControl = IdControl;
         this.nombre = nombre;
