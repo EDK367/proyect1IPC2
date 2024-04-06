@@ -111,13 +111,32 @@ public class controllerPuntoControl extends HttpServlet {
             psVerification.setLong(1, cuiOperador);
             rsVerification = psVerification.executeQuery();
             if(rsVerification.next()){
-                String sql = "INSERT INTO punto_control (idControl, nombreControl, cui_operador) VALUES (?, ?, ?)";
-                PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setInt(1, idControl);
-                ps.setString(2, nombre);
-                ps.setLong(3,cuiOperador);
-                ps.executeUpdate();
-                response.getWriter().print("SI se inserto " + newPoint);
+                String sqlVerificationBodega = "SELECT * FROM bodega WHERE NoBodega = ?";
+                PreparedStatement psVerificationBodega = connection.prepareStatement(sqlVerificationBodega);
+                psVerificationBodega.setInt(1, idControl);
+                rsVerification = psVerificationBodega.executeQuery();
+                if(rsVerification.next()){
+                    response.getWriter().print("No se puede insertar el punto de control " + idControl + " ya que existe una bodega enlazada");
+                }else {
+                    String sqlConnection = "SELECT * FROM punto_control";
+                    PreparedStatement psConnection = connection.prepareStatement(sqlConnection);
+                     psConnection.executeQuery();
+
+                    String sqlBodega = "INSERT INTO bodega (NoBodega, cui_operador) VALUES (?, ?)";
+                    PreparedStatement psBodega = connection.prepareStatement(sqlBodega);
+                    psBodega.setInt(1, idControl);
+                    psBodega.setLong(2, cuiOperador);
+
+
+                    String sql = "INSERT INTO punto_control (idControl, nombreControl, cui_operador) VALUES (?, ?, ?)";
+                    PreparedStatement ps = connection.prepareStatement(sql);
+                    ps.setInt(1, idControl);
+                    ps.setString(2, nombre);
+                    ps.setLong(3, cuiOperador);
+                    ps.executeUpdate();
+                    psBodega.executeUpdate();
+                    response.getWriter().print("SI se inserto " + newPoint + psBodega);
+                }
             }else{
                 response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
             }

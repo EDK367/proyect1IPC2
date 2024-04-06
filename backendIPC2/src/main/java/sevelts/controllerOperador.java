@@ -140,15 +140,24 @@ public class controllerOperador extends HttpServlet {
                 if (rsVerification.next()) {
                     response.getWriter().print("Ya existe un correo registrado");
                 } else {
-                    String sql = "INSERT INTO operador(cui_operador, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
-                    PreparedStatement ps = connection.prepareStatement(sql);
-                    ps.setLong(1, newOperador.getCuiOperador());
-                    ps.setString(2, newOperador.getNombre());
-                    ps.setString(3, newOperador.getApellido());
-                    ps.setString(4, newOperador.getCorreo());
-                    ps.setString(5, newOperador.getContraseña());
-                    ps.executeUpdate();
-                    response.getWriter().print("SI se actualizo" + newOperador);
+                    String sqlRece = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
+                    PreparedStatement psRece = connection.prepareStatement(sqlRece);
+                    psRece.setLong(1, cuiOperador);
+                    rsVerification = psRece.executeQuery();
+
+                    if (rsVerification.next()) {
+                        response.getWriter().print("este cui ya existe");
+                    } else {
+                        String sql = "INSERT INTO operador(cui_operador, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
+                        PreparedStatement ps = connection.prepareStatement(sql);
+                        ps.setLong(1, newOperador.getCuiOperador());
+                        ps.setString(2, newOperador.getNombre());
+                        ps.setString(3, newOperador.getApellido());
+                        ps.setString(4, newOperador.getCorreo());
+                        ps.setString(5, newOperador.getContraseña());
+                        ps.executeUpdate();
+                        response.getWriter().print("SI se actualizo" + newOperador);
+                    }
                 }
             }
         } catch (SQLException ex) {

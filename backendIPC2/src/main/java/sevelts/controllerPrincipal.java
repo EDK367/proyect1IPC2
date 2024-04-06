@@ -140,6 +140,7 @@ public class controllerPrincipal extends HttpServlet {
                 if(rsVerification.next()){
                     response.getWriter().print("El correo esta duplicado");
                 }else {
+
                     String sql = "INSERT INTO administrador(cui_admin, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setLong(1, newAdmin.getCuiAdmin());
