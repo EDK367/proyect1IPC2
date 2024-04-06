@@ -2,6 +2,7 @@ package sevelts;
 
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import dataBase.conexionData;
 import lombok.SneakyThrows;
 import models.tarifaGlobal;
@@ -82,6 +83,110 @@ public class controllerTarifaG extends HttpServlet {
                     }
                 }
             }
+
+    @SneakyThrows
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doOptions(request, response);
+        JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+
+        float tarifaGlobal = objeto.get("tarifaG").getAsFloat();
+        String fechaCreacion = objeto.get("fechaInicio").getAsString();
+
+        long cuiAdmin = objeto.get("cuiAdmin").getAsLong();
+
+        try {
+            connection = data.conectar();
+            String sqlVerificationAdmin = "SELECT * FROM administrador WHERE cui_admin = ?";
+            PreparedStatement psVerificationAdmin = connection.prepareStatement(sqlVerificationAdmin);
+            psVerificationAdmin.setLong(1, cuiAdmin);
+            ResultSet rsVerification = psVerificationAdmin.executeQuery();
+            if (rsVerification.next()) {
+                // Usar la sentencia SQL con parámetros para evitar inyección SQL
+                String sql = "INSERT INTO tarifaglobal(tarifaGlobal, fechaCreacion, cui_admin) VALUES (?, STR_TO_DATE(?, '%Y-%m-%d'), ?)";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setFloat(1, tarifaGlobal);
+                ps.setString(2, fechaCreacion);
+                ps.setLong(3, cuiAdmin);
+                ps.executeUpdate();
+                response.getWriter().print("Tarifa global registrada");
+            } else {
+                response.getWriter().print("No existe el admin en la base de datos " + cuiAdmin);
+            }
+        } catch (SQLException e) {
+            response.getWriter().print("Error en la inserción: " + e.getMessage());
+        } finally {
+            data.desconectar();
+        }
+    }
+
+
+protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    doOptions(request, response);
+    JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+    int IdTarifaGloblal = objeto.get("tarifaGlobalId").getAsInt();
+    try {
+        connection = data.conectar();
+        String sql = "DELETE FROM tarifaglobal WHERE IdTarifaGloblal = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, IdTarifaGloblal);
+        ps.executeUpdate();
+
+        response.getWriter().print("Se ha eliminado el dato " + IdTarifaGloblal);
+    } catch (SQLException | ClassNotFoundException ex) {
+        response.getWriter().print("Error al eliminar " + ex);
+    } finally {
+        data.desconectar();
+    }
+        }
+//    @SneakyThrows
+//    @Override
+//            protected void doPut(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//                    doOptions(request, response);
+//                JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+//
+//                int IdTarifaGloblal = objeto.get("IdTarifaGloblal").getAsInt();
+//                float tarifaGlobal = objeto.get("tarifaG").getAsFloat();
+//                String fechaCreacion = objeto.get("fechaInicio").getAsString();
+//                long cuiAdmin = objeto.get("cuiAdmin").getAsLong();
+//
+//                tarifaGlobal newGlobal = new tarifaGlobal();
+//                newGlobal.setTarifaGlobalId(IdTarifaGloblal);
+//                newGlobal.setTarifaG(tarifaGlobal);
+//                newGlobal.setFechaInicio(fechaCreacion);
+//                newGlobal.setCuiAdmin(cuiAdmin);
+//                    ResultSet rsVerification = null;
+//                try{
+//                    connection = data.conectar();
+//
+//                    String sqlVerification = "SELECT * FROM administrador WHERE cui_admin = ?";
+//                    PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
+//                    psVerification.setLong(1, cuiAdmin);
+//                    rsVerification = psVerification.executeQuery();
+//                    if(!rsVerification.next()){
+//                        response.getWriter().print("No existe el admin en la base de datos " + cuiAdmin);
+//                    }else {
+//                        String sql = "UPDATE tarifaglobal SET tarifaGlobal = ?, fechaCreacion = ?, cui_admin = ? WHERE IdTarifaGloblal = ?";
+//                        PreparedStatement ps = connection.prepareStatement(sql);
+//                        ps.setFloat(1, (float) newGlobal.getTarifaG());
+//                        ps.setString(2, newGlobal.getFechaInicio());
+//                        ps.setLong(3, newGlobal.getCuiAdmin());
+//                        ps.setInt(4, newGlobal.getTarifaGlobalId());
+//                        ps.executeUpdate();
+//                        response.getWriter().print("Tarifa global actualizada");
+//                    }
+//                }catch(SQLException | ClassNotFoundException e){
+//                    response.getWriter().print("Error al actualizar " + e);
+//                }finally {
+//                    if(rsVerification != null){
+//                        rsVerification.close();
+//                    }
+//                    data.desconectar();
+//                }
+//            }
 
     @Override
     public String getServletInfo() {

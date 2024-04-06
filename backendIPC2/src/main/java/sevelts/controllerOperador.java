@@ -123,30 +123,32 @@ public class controllerOperador extends HttpServlet {
 
         try {
             connection = data.conectar();
-            String sqlVerification = "SELECT * FROM administrador WHERE cui_admin = ?";
+            String sqlVerification = "SELECT * FROM operador WHERE cui_operador = ? OR correo = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
             psVerification.setLong(1, cuiOperador);
+            psVerification.setString(2, correo);
             rsVerification = psVerification.executeQuery();
 
             if (rsVerification.next()) {
-                response.getWriter().print("este cui ya existe");
+                response.getWriter().print("este cui o correo ya existe en esta base de datos");
             } else {
-
-                String sqlCorreo = "SELECT * FROM administrador WHERE correo = ?";
-                PreparedStatement psCorreo = connection.prepareStatement(sqlCorreo);
-                psCorreo.setString(1, correo);
-                rsVerification = psCorreo.executeQuery();
+                String sqlAdmin = "SELECT * FROM administrador WHERE cui_admin = ? OR correo = ?";
+                PreparedStatement psAdmin = connection.prepareStatement(sqlAdmin);
+                psAdmin.setLong(1, cuiOperador);
+                psAdmin.setString(2, correo);
+                rsVerification = psAdmin.executeQuery();
 
                 if (rsVerification.next()) {
-                    response.getWriter().print("Ya existe un correo registrado");
+                    response.getWriter().print("Ya existe el cui o correo en la base de datos de administradores");
                 } else {
-                    String sqlRece = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
+                    String sqlRece = "SELECT * FROM recepcionista WHERE cui_recepcionista = ? OR correo = ?";
                     PreparedStatement psRece = connection.prepareStatement(sqlRece);
                     psRece.setLong(1, cuiOperador);
+                    psRece.setString(2, correo);
                     rsVerification = psRece.executeQuery();
 
                     if (rsVerification.next()) {
-                        response.getWriter().print("este cui ya existe");
+                        response.getWriter().print("este cui o correo ya existe en la tabla recepcionista");
                     } else {
                         String sql = "INSERT INTO operador(cui_operador, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
                         PreparedStatement ps = connection.prepareStatement(sql);
@@ -188,7 +190,7 @@ public class controllerOperador extends HttpServlet {
             ps.executeUpdate();
             response.getWriter().print("SI se elimino");
         } catch (SQLException ex) {
-            response.getWriter().print("que hubo");
+            response.getWriter().print("Este dato es muy probable que ya ese enlazado " + ex);
         } catch (ClassNotFoundException e) {
             response.getWriter().print("try de fount");
         } finally {

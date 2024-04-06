@@ -126,18 +126,15 @@ public class controllerCliente extends HttpServlet {
                 response.getWriter().print("Error, el cliente ya existe en la base de datos");
 
             }else{
-                String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ?";
-                PreparedStatement psOperador = connection.prepareStatement(sqlOperador);
+                String sqlrecepcionista = "SELECT * FROM recepcionista WHERE cui_operador = ? AND cui_recepcionista = ?";
+                PreparedStatement psOperador = connection.prepareStatement(sqlrecepcionista );
                 psOperador.setLong(1, cuiOperador);
+                psOperador.setLong(2, cuiRecepcionista);
                 ResultSet rsOperador = psOperador.executeQuery();
 
-                if( rsOperador.next()){
-                    String sqlRecepcionista = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
-                    PreparedStatement psRecepcionista = connection.prepareStatement(sqlRecepcionista);
-                    psRecepcionista.setLong(1, cuiRecepcionista);
-                    ResultSet rsRecepcionista = psRecepcionista.executeQuery();
 
-                    if( rsRecepcionista.next()){
+
+                    if( rsOperador.next()){
                         String sql = "INSERT INTO cliente (nit, nombre, apellido, telefono, cui_operador, cui_recepcionista) VALUES (?, ?, ?, ?, ?, ?)";
                         PreparedStatement ps = connection.prepareStatement(sql);
                         ps.setInt(1, nit);
@@ -148,17 +145,16 @@ public class controllerCliente extends HttpServlet {
                         ps.setLong(6, cuiRecepcionista);
                         ps.executeUpdate();
                         response.getWriter().print("Cliente creado exitosamente");
-                    }else{
-                        response.getWriter().print("Error, el recepcionista no existe en la base de datos");
-                    }
+
+
 
                 }else{
-                    response.getWriter().print("Error, el operador no existe en la base de datos");
+                    response.getWriter().print("Error, el operador o recepcionista no existe en la base de datos");
                 }
             }
 
         } catch (SQLException ex) {
-            response.getWriter().print("Error en la creacion, posiblemente hay un dato duplicado" + ex);
+            response.getWriter().print("Error en la creacion, puede que el recepcionista no trabaje con ese operador " + ex);
     } finally{
         if (rsVerification != null) {
             rsVerification.close();

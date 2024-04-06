@@ -124,33 +124,43 @@ public class controllerPrincipal extends HttpServlet {
         try {
             connection = data.conectar();
 
-            String sqlVerification = "SELECT * FROM administrador WHERE cui_admin = ?";
+            String sqlVerification = "SELECT * FROM administrador WHERE cui_admin = ? OR correo = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
             psVerification.setLong(1,  cuiAdmin);
+            psVerification.setString(2, correo);
             rsVerification = psVerification.executeQuery();
 
             if (rsVerification.next()) {
-                response.getWriter().print("este cui ya existe");
+                response.getWriter().print("este cui o correo ya existe en admin");
             } else {
-                String sqlCorreo = "SELECT * FROM administrador WHERE correo = ?";
-                PreparedStatement psCorreo = connection.prepareStatement(sqlCorreo);
-                psCorreo.setString(1, correo);
-                rsVerification = psCorreo.executeQuery();
+                String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ? OR correo = ?";
+                PreparedStatement psOperador = connection.prepareStatement(sqlOperador);
+                psOperador.setLong(1,  cuiAdmin);
+                psOperador.setString(2,  correo);
+                rsVerification = psOperador.executeQuery();
 
                 if(rsVerification.next()){
-                    response.getWriter().print("El correo esta duplicado");
+                    response.getWriter().print("Este cui o correo ya existe en operador");
                 }else {
+                    String sqlRecepcion = "SELECT * FROM recepcionista WHERE cui_recepcionista = ? OR correo = ?";
+                    PreparedStatement psRece = connection.prepareStatement(sqlRecepcion);
+                    psRece.setLong(1,  cuiAdmin);
+                    psRece.setString(2,  correo);
+                    rsVerification = psRece.executeQuery();
 
-                    String sql = "INSERT INTO administrador(cui_admin, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
-                    PreparedStatement ps = connection.prepareStatement(sql);
-                    ps.setLong(1, newAdmin.getCuiAdmin());
-                    ps.setString(2, newAdmin.getNombre());
-                    ps.setString(3, newAdmin.getApellido());
-                    ps.setString(4, newAdmin.getCorreo());
-                    ps.setString(5, newAdmin.getContraseña());
-                    ps.executeUpdate();
-                    response.getWriter().print("SI se actualizo" + newAdmin);
-
+                    if(rsVerification.next()){
+                        response.getWriter().print("Este cui o correo ya existe en recepcionista");
+                    }else {
+                        String sql = "INSERT INTO administrador(cui_admin, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
+                        PreparedStatement ps = connection.prepareStatement(sql);
+                        ps.setLong(1, newAdmin.getCuiAdmin());
+                        ps.setString(2, newAdmin.getNombre());
+                        ps.setString(3, newAdmin.getApellido());
+                        ps.setString(4, newAdmin.getCorreo());
+                        ps.setString(5, newAdmin.getContraseña());
+                        ps.executeUpdate();
+                        response.getWriter().print("SI se actualizo" + newAdmin);
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -202,7 +212,7 @@ public class controllerPrincipal extends HttpServlet {
         doOptions(request, response);
         Gson gson = new Gson();
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
-        
+
         long cuiAdmin = objeto.get("cuiAdmin").getAsLong();
         String nombre = objeto.get("nombre").getAsString();
         String apellido = objeto.get("apellido").getAsString();
@@ -211,7 +221,7 @@ public class controllerPrincipal extends HttpServlet {
 
         conexionData data = new conexionData();
         Connection connection = null;
-        
+
         try {
             connection = data.conectar();
             //verificacion si existe
@@ -242,7 +252,7 @@ public class controllerPrincipal extends HttpServlet {
             data.desconectar();
         }
     }
-    
+
     @SneakyThrows
     @Override
     public String getServletInfo() {

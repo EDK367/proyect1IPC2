@@ -178,7 +178,34 @@ public class controllerPaquetes extends HttpServlet {
                                         psInsert.executeUpdate();
                                         response.getWriter().println("Paquete insertado correctamente");
                                     } else {
-                                        response.getWriter().println("El paquete no tiene tarifa global");
+                                        String sqlTarifaLocal = "SELECT * FROM tarifalocal ORDER BY IdTarifa AND IDControl DESC LIMIT 1";
+                                        PreparedStatement psTarifaLocal = connection.prepareStatement(sqlTarifaLocal);
+                                        ResultSet rsTarifaLocal = psTarifaLocal.executeQuery();
+
+                                        float tarifaLocalValue = 0.0f;
+                                        if (rsTarifaLocal.next()) {
+                                            tarifaLocalValue = rsTarifaLocal.getFloat("tarifalocal");
+                                        }else{
+                                            response.getWriter().println("No se encontro la tarifa local");
+                                        }
+
+                                        // Calcular el total multiplicando la tarifa global por el peso
+                                        float total = tarifaLocalValue * peso;
+
+                                        // Insertar el paquete en la tabla paquetes con el total calculado
+                                        String sqlInsert = "INSERT INTO paquetes(NIT, NoPedido, NoBodega, peso, tarifaGlobal, total, destino, cui_recepcionista, cui_operador) VALUES(?,?,?,?,?,?,?,?,?)";
+                                        PreparedStatement psInsert = connection.prepareStatement(sqlInsert);
+                                        psInsert.setInt(1, NIT);
+                                        psInsert.setInt(2, NoPedido);
+                                        psInsert.setInt(3, NoBodega);
+                                        psInsert.setFloat(4, peso);
+                                        psInsert.setBoolean(5, tarifaGlobal);
+                                        psInsert.setFloat(6, total);
+                                        psInsert.setString(7, destino);
+                                        psInsert.setLong(8, cuiRecepcionista);
+                                        psInsert.setLong(9, cuiOperador);
+                                        psInsert.executeUpdate();
+                                        response.getWriter().println("Paquete insertado correctamente");
                                     }
 
                                 }else{
@@ -204,6 +231,21 @@ public class controllerPaquetes extends HttpServlet {
                 }
             }//final del post
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+                doOptions(request, response);
+                JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+                int NIT = objeto.get("NIT").getAsInt();
+                int NoPedido = objeto.get("NoPedido").getAsInt();
+                float peso = objeto.get("peso").getAsFloat();
+                boolean tarifaGlobal = objeto.get("tarifaG").getAsBoolean();
+                String destino = objeto.get("destino").getAsString();
+                long cuiRecepcionista = objeto.get("cuiRecepcionista").getAsLong();
+                long cuiOperador = objeto.get("cuiOperador").getAsLong();
+
+                paquetes newPaquete = new paquetes();
+            }
     @Override
     public String getServletInfo() {
 

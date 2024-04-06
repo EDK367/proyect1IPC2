@@ -115,23 +115,26 @@ public class contollerRecepcionista extends HttpServlet {
         ResultSet rsVerification = null;
         try {
             connection = data.conectar();
-            String sqlVerification = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
+            String sqlVerification = "SELECT * FROM recepcionista WHERE cui_recepcionista = ? OR correo = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
             psVerification.setLong(1, cuiRecepcionista);
+            psVerification.setString(2, correo);
             rsVerification = psVerification.executeQuery();
             if (rsVerification.next()) {
-                response.getWriter().print("ya existe este recepcionista");
+                response.getWriter().print("ya existe este cui o correo en recepcionista");
             } else {
-                String sqlAdmin = "SELECT * FROM administrador WHERE cui_admin = ?";
+                String sqlAdmin = "SELECT * FROM administrador WHERE cui_admin = ? OR correo = ?";
                 PreparedStatement psAdmin = connection.prepareStatement(sqlAdmin);
                 psAdmin.setLong(1, cuiRecepcionista);
+                psAdmin.setString(2, correo);
                 rsVerification = psAdmin.executeQuery();
                 if (rsVerification.next()) {
-                    response.getWriter().print("ya existe este cui en admin");
+                    response.getWriter().print("ya existe este cui o correo en admin");
                 } else {
-                    String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ?";
+                    String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ? OR correo = ?";
                     PreparedStatement psOperador = connection.prepareStatement(sqlOperador);
                     psOperador.setLong(1, cuiOperador);
+                    psOperador.setString(2, correo);
                     rsVerification = psOperador.executeQuery();
                     if (rsVerification.next()) {
                         long cuiOperadorVerification = rsVerification.getLong("cui_operador");
@@ -149,7 +152,7 @@ public class contollerRecepcionista extends HttpServlet {
                             ps.executeUpdate();
                             response.getWriter().print("Todo salio bien");
                         } else {
-                            response.getWriter().print("Este cui ya existe en operadores");
+                            response.getWriter().print("Este cui o correo ya existe en operador");
                         }
                     } else {
                         response.getWriter().print("no existe este operador");
@@ -179,18 +182,21 @@ public class contollerRecepcionista extends HttpServlet {
         long cuiRecepcionista = objeto.get("cuiRecepcionista").getAsLong();
         connection = data.conectar();
         try {
-            String sqlVerification = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
+            // Verificar si hay registros en la tabla cliente que dependen del recepcionista a eliminar
+            String sqlVerification = "SELECT * FROM cliente WHERE cui_recepcionista = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
             psVerification.setLong(1, cuiRecepcionista);
             ResultSet rsVerification = psVerification.executeQuery();
             if (rsVerification.next()) {
+                // Si hay registros en la tabla cliente, no se puede eliminar el recepcionista
+                response.getWriter().print("No se puede eliminar el recepcionista porque hay registros en la tabla cliente que dependen de él");
+            } else {
+                // No hay registros en la tabla cliente que dependan del recepcionista, proceder con la eliminación
                 String sql = "DELETE FROM recepcionista WHERE cui_recepcionista = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setLong(1, cuiRecepcionista);
                 ps.executeUpdate();
-                response.getWriter().print("recepcionista eliminado");
-            } else {
-                response.getWriter().print("recepcionista no existe");
+                response.getWriter().print("Recepcionista eliminado");
             }
         } catch (SQLException e) {
             response.getWriter().print("Error inesperado " + e);
@@ -198,6 +204,7 @@ public class contollerRecepcionista extends HttpServlet {
             data.desconectar();
         }
     }
+
 
     @SneakyThrows
     @Override
@@ -211,49 +218,42 @@ public class contollerRecepcionista extends HttpServlet {
         String apellido = objeto.get("apellido").getAsString();
         String correo = objeto.get("correo").getAsString();
         String contraseña = objeto.get("contraseña").getAsString();
-        long cuiOperador = objeto.get("cuiOperador").getAsLong();
+        long nuevoCuiOperador = objeto.get("cuiOperador").getAsLong();
 
         ResultSet rsVerification = null;
         try {
-
             connection = data.conectar();
+            // Verificar si el nuevo cuiOperador existe en la tabla operador
             String sqlVerification = "SELECT * FROM operador WHERE cui_operador = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
-            psVerification.setLong(1, cuiOperador);
+            psVerification.setLong(1, nuevoCuiOperador);
             rsVerification = psVerification.executeQuery();
 
             if (rsVerification.next()) {
-                String sqlUpdate = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
-                PreparedStatement psUpdate = connection.prepareStatement(sqlUpdate);
-                psUpdate.setLong(1, cuiRecepcionista);
-                ResultSet rsUpdate = psUpdate.executeQuery();
-                if (rsUpdate.next()) {
-                    String sql = "UPDATE recepcionista SET  nombre = ?, apellido = ?, correo = ?, contraseña = ?, cui_operador = ? WHERE cui_recepcionista = ?";
-                    PreparedStatement ps = connection.prepareStatement(sql);
-                    ps.setString(1, nombre);
-                    ps.setString(2, apellido);
-                    ps.setString(3, correo);
-                    ps.setString(4, contraseña);
-                    ps.setLong(5, cuiOperador);
-                    ps.setLong(6, cuiRecepcionista);
-                    ps.executeUpdate();
-                    response.getWriter().print("recepcionista actualizado");
-                } else {
-                    response.getWriter().print("No existe el recepcionista ");
-
-                }
+                String sqlUpdate = "UPDATE recepcionista SET nombre = ?, apellido = ?, correo = ?, contraseña = ?, cui_operador = ? WHERE cui_recepcionista = ?";
+                PreparedStatement ps = connection.prepareStatement(sqlUpdate);
+                ps.setString(1, nombre);
+                ps.setString(2, apellido);
+                ps.setString(3, correo);
+                ps.setString(4, contraseña);
+                ps.setLong(5, nuevoCuiOperador);
+                ps.setLong(6, cuiRecepcionista);
+                ps.executeUpdate();
+                response.getWriter().print("recepcionista actualizado");
             } else {
-                response.getWriter().print("No existe el operador ");
+                // El nuevo cuiOperador no existe en la tabla operador
+                response.getWriter().print("El nuevo cuiOperador no existe en la tabla operador");
             }
         } catch (SQLException ex) {
-            response.getWriter().print("Error inesperado " + ex);
+            response.getWriter().print("Error Este cui Operador existe en otra dependencias " + ex);
         } finally {
             if (rsVerification != null) {
                 rsVerification.close();
             }
-            data.conectar();
+            data.desconectar();
         }
     }//fin del put
+
 
 
     @Override
