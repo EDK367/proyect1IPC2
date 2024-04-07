@@ -1,53 +1,46 @@
 <template>
-  <div class="principal">
-    <h2>Administradores</h2>
-    <div class="nuevo_admin">
-      <button type="button" class="btn btn-outline-primary" @click="newAdmin">
-        New Admin
-      </button>
-      <component :is="newAdmin" :key="newAdmin"></component>
-    </div>
-    <div class="table">
-      <table>
-        <thead>
-          <tr>
-            <th>CUI</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Correo</th>
-            <th>Contraseña</th>
-            <th>Opciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="admin in administrador" :key="admin.cuiAdmin">
-            <td>{{ admin.cuiAdmin }}</td>
-            <td>{{ admin.nombre }}</td>
-            <td>{{ admin.apellido }}</td>
-            <td>{{ admin.correo }}</td>
-            <td>{{ admin.contraseña }}</td>
-            <td>
-              <button
-                type="button"
-                class="btn btn-warning"
-                @click="editar(admin)"
-              >
-                Editar
-              </button>
-              <button
-                type="button"
-                class="btn btn-danger"
-                @click="eliminar(admin)"
-              >
-                Eliminar
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <v-container class="principal">
+    <v-row>
+      <v-col cols="12">
+        <h2>Administradores</h2>
+        <v-btn color="primary" @click="newAdmin">Nuevo Administrador</v-btn>
+        <component :is="newAdmin" :key="newAdmin"></component>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th>CUI</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Correo</th>
+                <th>Contraseña</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="admin in administrador" :key="admin.cuiAdmin">
+                <td>{{ admin.cuiAdmin }}</td>
+                <td>{{ admin.nombre }}</td>
+                <td>{{ admin.apellido }}</td>
+                <td>{{ admin.correo }}</td>
+                <td>{{ admin.contraseña }}</td>
+                <td>
+                  <v-btn color="warning" @click="editar(admin)">Editar</v-btn>
+                  <v-btn color="error" @click="eliminar(admin)">Eliminar</v-btn>
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
 
 <script>
 import axios from "axios";
