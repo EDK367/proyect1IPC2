@@ -2,8 +2,8 @@
   <div>
     <v-img
       class="mx-auto my-6"
-      max-width="228"
-      src="https://cdn.vuetifyjs.com/docs/images/logos/vuetify-logo-v3-slim-text-light.svg"
+      max-width="100"
+      :src= "require('../icons/3795330.png')"
     ></v-img>
 
     <v-card
@@ -88,6 +88,9 @@
 import axios from 'axios'
 //importar el router
 import router from '@/router'
+//importar el vuex
+import store from '@/store'
+
 export default {
   data: () => ({
     sheet: false,
@@ -99,7 +102,7 @@ export default {
       required: (value) => !!value || "Field is required",
     },
   }),
-
+  
   methods: {
     submitForm() {
       // Formar el objeto JSON con los datos ingresados
@@ -116,7 +119,8 @@ export default {
         .then((response) => {
           
           if(Object.keys(response.data).length > 0){
-           router.push('/admin')
+            store.commit('toggleFixedComponent', false)            
+            router.push('/admin')
           }else{
             this.sheet = true;
           }
@@ -126,6 +130,7 @@ export default {
         });
     },
   },
+
 };
 </script>
 

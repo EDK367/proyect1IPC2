@@ -90,6 +90,7 @@ public class contollerRecepcionista extends HttpServlet {
     }
 
     @SneakyThrows
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doOptions(request, response);

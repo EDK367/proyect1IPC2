@@ -1,128 +1,172 @@
 <template>
-  <div class="operador">
-    <form @submit.prevent="submitForm">
-      <h3>Operador</h3>
-      <label for="user">Usuario/CUI: </label><br>
-      <input id="user" v-model="form.user" type="number" required><br>
+  <div>
+    <v-img
+      class="mx-auto my-6"
+      max-width="100"
+      :src= "require('../icons/3795330.png')"
+    ></v-img>
 
-      <label for="password">Contraseña</label><br>
-      <input id="password" v-model="form.password" :type="passwordFieldType" name="password" required>
-      <br>
-      <input type="checkbox" id="show" @click="togglePasswordVisibility">
-      Mostrar Contraseña
-      <br><br>
-       <nav class="button" :class="{ 'disabled': !isFormValid }">
-         <router-link v-if="isFormValid" :to="{ path: '/operador' }" class="link">
-           Iniciar Sesion
-         </router-link>
-         <span v-else class="link disabled">
-           Iniciar Sesion
-         </span>
-       </nav>
-       <router-view/>
-    </form>
+    <v-card
+      class="mx-auto pa-12 pb-8"
+      elevation="8"
+      max-width="448"
+      rounded="lg"
+    >
+      <div class="text-subtitle-1 text-medium-emphasis">Operador</div>
 
+      <v-text-field
+        v-model="operatorID"
+        :rules="[rules.required]"
+        density="compact"
+        type="number"
+        placeholder="ID Operador"
+        prepend-inner-icon="mdi-account-outline"
+        variant="outlined"
+      ></v-text-field>
+
+      <div
+        class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
+      >
+        Password
+      </div>
+
+      <v-text-field
+        v-model="password"
+        :rules="[rules.required]"
+        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="visible ? 'text' : 'password'"
+        density="compact"
+        placeholder="Enter your password"
+        prepend-inner-icon="mdi-lock-outline"
+        variant="outlined"
+        @click:append-inner="visible = !visible"
+      ></v-text-field>
+
+      <v-btn
+        class="buttonLogin"
+        color="Black"
+        size="large"
+        variant="tonal"
+        block
+        @click="submitForm"
+        :disabled="!operatorID || !password"
+      >
+        Login
+      </v-btn>
+    </v-card>
+
+
+        <v-bottom-sheet v-model="sheet">
+      <v-card
+        class="text-center"
+        height="200"
+      >
+        <v-card-text>
+          <v-btn
+            variant="text"
+            @click="sheet = !sheet"
+          >
+            close
+          </v-btn>
+
+          <br>
+          <br>
+
+          <div class="invalid">
+            Los datos ingresado fueron incorrectos, por favor llenar de nuevo
+            <br>
+            O comunicarse con un administrador
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </div>
-  
-
 </template>
 
 <script>
-
+//se importa axios para el post
+import axios from 'axios'
+//importar el router
+import router from '@/router'
 export default {
+  data: () => ({
+    sheet: false,
+    visible: false,
+    adminID: "",
+    password: "",
 
-    
-  data() {
-    return {
-      form: {
-        user: '',
-        password: ''
-      },
-      passwordFieldType: 'password' 
-    }
-  },
+    rules: {
+      required: (value) => !!value || "Field is required",
+    },
+  }),
+
   methods: {
     submitForm() {
-      console.log("Operador", this.form);
-      
+      // Formar el objeto JSON con los datos ingresados
+      const dataLogin = {
+        identificador: this.operatorID,
+        password: this.password,
+      };
+      // Mostrar el objeto JSON en la consola del navegador
+      console.log("Datos del formulario:", dataLogin);
+      const operdorJson = JSON.stringify(dataLogin);
+      //aca se envia el post
+      axios
+        .post("http://localhost:8080/backendIPC2/api/login", dataLogin)
+        .then((response) => {
+          
+          if(Object.keys(response.data).length > 0){
+           router.push('/operador')
+          }else{
+            this.sheet = true;
+          }
+        })
+        .catch((error) => {
+          console.error("Error al enviar la solicitud:", error);
+        });
     },
-    togglePasswordVisibility() {
-      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
-    }
   },
-  computed:{
-    isFormValid(){
-      return this.form.user !== '' && this.form.password !== '';
-    }
-  }
-}
+};
 </script>
 
 <style scoped>
-
-.operador {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: -40vh;
-  margin: 0 auto;
-
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  width: 275px;
-  padding: 20px;
-  border-radius: 30px;
-  background-color: rgb(6, 141, 237);
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-label {
-  margin-bottom: 10px;
-}
-
-input[type="number"],
-input[type="password"] {
-  margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-
-.button {
-  display: flex;
-  justify-content: center;
-}
-
-.button .link {
-  text-decoration: none;
-  padding: 10px 20px;
-  background-color: #007BFF;
+.buttonLogin {
+  background-color: #437af9 !important;
   color: white;
-  border-radius: 20px;
-  transition: all 0.3s ease 0s;
-  cursor: pointer;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
 }
 
-.button .link:hover {
-  background-color: #cde8ff;
-  transform: scale(1.1);
-  transition: transform 0.5s;
+.buttonLogin::after {
+  content: "" !important;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle farthest-corner at 10% 20%,
+    rgba(255, 94, 247, 1) 18%,
+    rgba(2, 245, 255, 1) 100%
+  );
+  filter: blur(15px);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  animation: move 2s linear infinite;
+  background-size: 40% 200%;
+}
+
+.buttonLogin:hover {
+  background-color: #134dfb !important;
   color: black;
 }
 
-/* Deshabilitar el enlace cuando el formulario no está lleno */
-.button.disabled .link {
-  background-color: #ccc;
-  cursor: not-allowed;
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 200px 4400px;
+  }
 }
-
-
-
-
-
 </style>

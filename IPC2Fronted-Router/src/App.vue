@@ -1,14 +1,36 @@
 <template>
+  <FixedComponent v-if="showFixedComponent">
   <nav class="pages">
     | <router-link to="/" class="link">Home</router-link> |
     <router-link to="/about" class="link">Login</router-link> |  
   </nav>
+  </FixedComponent>
   <transition name="fade" mode="out-in">
   <router-view/>
 </transition>
 </template>
 
 <script>
+import adminLogin from "./components/login/admin.vue";
+import store from "@/store"
+export default {
+  components: {
+   adminLogin,
+  },
+  data() {
+    return {
+      showFixedComponent: true,
+    };
+  },
+
+  computed: {
+    showFixedComponent(){
+      return store.state.showFixedComponent;
+    }
+  }
+
+}//end export
+
 
 </script>
 

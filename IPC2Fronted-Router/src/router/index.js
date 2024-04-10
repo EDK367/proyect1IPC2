@@ -1,8 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import inicioAdmin from '../views/inicioAdmin.vue'
-import inicioOperador from '../views/inicioOperador.vue'
-import inicioRecepcion from '../views/inicioRecepcion.vue'
 
 const routes = [
   {
@@ -22,19 +19,19 @@ const routes = [
     path: '/admin',
     name: 'admin',
 
-    component: () => import('../views/inicioAdmin.vue')
+    component: () => import('../views/mainAdmin.vue')
   },
   {
   path: '/operador',
   name: 'operador',
 
-  component: () => import('../views/inicioOperador.vue')
+  component: () => import('../views/mainOperator.vue')
   },
   {
     path: '/recepcion',
     name: 'recepcion',
 
-    component: () => import('../views/inicioRecepcion.vue')
+    component: () => import('../views/mainRece.vue')
   }
 ]
 

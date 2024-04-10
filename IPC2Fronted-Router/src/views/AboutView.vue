@@ -60,6 +60,7 @@ components: {
 .contenedor_Boton{
   text-align: center;
   margin: 0 auto;
+  align-items: flex-start;
   
 }
 button {
@@ -72,7 +73,7 @@ button {
   border-radius: 20px;
   transition: all 0.3 ease 0s;
   cursor: pointer;
-  margin: 10px 20px;
+  margin: 5px 20px;
 }
 
 button:hover {

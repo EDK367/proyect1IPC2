@@ -17,13 +17,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //@WebServlet(name = "controllerPrincipal", urlPatterns = {"/controllerPrincipal"})
 @WebServlet("/api/admin")
 public class controllerPrincipal extends HttpServlet {
-    
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -131,7 +129,9 @@ public class controllerPrincipal extends HttpServlet {
             rsVerification = psVerification.executeQuery();
 
             if (rsVerification.next()) {
-                response.getWriter().print("este cui o correo ya existe en admin");
+                //response.getWriter().print("este cui o correo ya existe en admin ");
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
             } else {
                 String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ? OR correo = ?";
                 PreparedStatement psOperador = connection.prepareStatement(sqlOperador);
@@ -140,7 +140,10 @@ public class controllerPrincipal extends HttpServlet {
                 rsVerification = psOperador.executeQuery();
 
                 if(rsVerification.next()){
-                    response.getWriter().print("Este cui o correo ya existe en operador");
+                   // response.getWriter().print("Este cui o correo ya existe en operador ");
+                    objeto = new JsonObject();
+
+                    response.getWriter().print(objeto);
                 }else {
                     String sqlRecepcion = "SELECT * FROM recepcionista WHERE cui_recepcionista = ? OR correo = ?";
                     PreparedStatement psRece = connection.prepareStatement(sqlRecepcion);
@@ -149,7 +152,9 @@ public class controllerPrincipal extends HttpServlet {
                     rsVerification = psRece.executeQuery();
 
                     if(rsVerification.next()){
-                        response.getWriter().print("Este cui o correo ya existe en recepcionista");
+                       // response.getWriter().print("Este cui o correo ya existe en recepcionista ");
+                        objeto = new JsonObject();
+                        response.getWriter().print(objeto);
                     }else {
                         String sql = "INSERT INTO administrador(cui_admin, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
                         PreparedStatement ps = connection.prepareStatement(sql);
@@ -159,7 +164,10 @@ public class controllerPrincipal extends HttpServlet {
                         ps.setString(4, newAdmin.getCorreo());
                         ps.setString(5, newAdmin.getContraseña());
                         ps.executeUpdate();
-                        response.getWriter().print("SI se actualizo" + newAdmin);
+                        response.getWriter().print("SI se actualizo ");
+                        objeto = new JsonObject();
+                        objeto.addProperty("cuiAdmin", newAdmin.getCuiAdmin());
+                        response.getWriter().print(objeto);
                     }
                 }
             }
