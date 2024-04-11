@@ -1,66 +1,90 @@
 <template>
-<div class="a">
-</div>
   <v-card>
-     <component :is="use" :key="use"></component>
+    <component :is="use" :key="use"></component>
     <v-layout>
-      <v-navigation-drawer
-        v-model="drawer"
-        :rail="rail"
-        permanent
-        @click="rail = false"
-      >
+      <v-navigation-drawer expand-on-hover rail>
+        <v-divider></v-divider>
         <v-list-item
-          prepend-icon="mdi-view-dashboard"
-          nav
-        >
-          <template v-slot:append>
-            <v-btn
-              icon="mdi-chevron-left"
-              variant="text"
-              @click.stop="rail = !rail"
-            ></v-btn>
-          </template>
-        </v-list-item>
-
+          prepend-icon="mdi-account-outline"
+          title="Perfil"
+          value="tables"
+          @click="changeComponent('tables')"
+        ></v-list-item>
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users" @click="use"></v-list-item>
-          <v-list-item prepend-icon="mdi-camera-control" title="Points" value="points" ></v-list-item>
-          <v-list-item prepend-icon="mdi-ballot-outline" title="Reports" value="reports"></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-account-tie"
+            title="Admin"
+            value="tables"
+            @click="changeComponent('tables')"
+          ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-account-supervisor"
+            title="Operator"
+            value="tablesOp"
+            @click="changeComponent('tablesOp')"
+          ></v-list-item>
+<v-list-item
+            prepend-icon="mdi-account-voice"
+            title="Recepcion"
+            value="tablesOp"
+            @click="changeComponent('tablesRe')"
+          ></v-list-item>
+
+
+          <v-list-item
+            prepend-icon="mdi-camera-control"
+            title="Points"
+            value="points"
+          ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-ballot-outline"
+            title="Reports"
+            value="reports"
+          ></v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-main style="height: 100px"></v-main>
+      <v-main style="height: 250px"></v-main>
     </v-layout>
   </v-card>
-    
-    
-
 </template>
 
 <script>
-import tables from '../components/administrador/adminUser.vue'
-import nuevoUser from '../components/administrador/new.vue'
-  export default {
-    data () {
-      return {
-        use: tables,
-        drawer: true,
-        rail: true,
-       
+import tables from "../components/administrador/adminUser.vue";
+import tablesOp from "../components/administrador/operator.vue";
+import tablesRe from "../components/administrador/recepcion.vue"
+
+export default {
+  data() {
+    return {
+      use: tables,
+      drawer: true,
+      rail: true,
+    };
+  },
+
+  methods: {
+    // Método para cambiar el componente mostrado
+    changeComponent(componentName) {
+      if (componentName === "tables") {
+        this.use = tables;
+      } else if (componentName === "tablesOp") {
+        this.use = tablesOp;
+      } else if(componentName === "tablesRe"){
+        this.use = tablesRe;
       }
     },
+  },
 
-    components:{
-        tables,
-    }
-  }
+  components: {
+    tables,
+    tablesOp,
+    tablesRe,
+  },
+};
 </script>
 
 <style>
-
-
-
-
+/* Estilos CSS si los necesitas */
 </style>

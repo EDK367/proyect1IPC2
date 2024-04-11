@@ -130,7 +130,9 @@ public class controllerOperador extends HttpServlet {
             rsVerification = psVerification.executeQuery();
 
             if (rsVerification.next()) {
-                response.getWriter().print("este cui o correo ya existe en esta base de datos");
+                //response.getWriter().print("este cui o correo ya existe en esta base de datos");
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
             } else {
                 String sqlAdmin = "SELECT * FROM administrador WHERE cui_admin = ? OR correo = ?";
                 PreparedStatement psAdmin = connection.prepareStatement(sqlAdmin);
@@ -139,7 +141,9 @@ public class controllerOperador extends HttpServlet {
                 rsVerification = psAdmin.executeQuery();
 
                 if (rsVerification.next()) {
-                    response.getWriter().print("Ya existe el cui o correo en la base de datos de administradores");
+                    //response.getWriter().print("Ya existe el cui o correo en la base de datos de administradores");
+                    objeto = new JsonObject();
+                    response.getWriter().print(objeto);
                 } else {
                     String sqlRece = "SELECT * FROM recepcionista WHERE cui_recepcionista = ? OR correo = ?";
                     PreparedStatement psRece = connection.prepareStatement(sqlRece);
@@ -148,7 +152,9 @@ public class controllerOperador extends HttpServlet {
                     rsVerification = psRece.executeQuery();
 
                     if (rsVerification.next()) {
-                        response.getWriter().print("este cui o correo ya existe en la tabla recepcionista");
+                        //response.getWriter().print("este cui o correo ya existe en la tabla recepcionista");
+                        objeto = new JsonObject();
+                        response.getWriter().print(objeto);
                     } else {
                         String sql = "INSERT INTO operador(cui_operador, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
                         PreparedStatement ps = connection.prepareStatement(sql);

@@ -1,80 +1,69 @@
 <template>
-  <h1>Table of Users</h1>
-<div class="table_Container">
-  <v-table height="400px"
-  fixed-header>
-    <thead>
-  <nuevoUser/>
-     
-      <tr>
-        <th class="text-left">Identification</th>
-        <th class="text-left">Name</th>
-        <th class="text-left">Last Name</th>
-        <th class="text-left">Gmail</th>
-        <th class="text-left">Password</th>
-        <th class="text-left">Options</th>
-      </tr>
-    </thead>
+  <h1>Table of Users Admins</h1>
+  <div class="table_Container">
+    <v-table height="400px" fixed-header>
+      <thead>
+        <nuevoUser />
 
-    <tbody>
-         <tr v-for="admin in administrador" :key="admin.cuiAdmin">
-            <td>{{ admin.cuiAdmin }}</td>
-            <td>{{ admin.nombre }}</td>
-            <td>{{ admin.apellido }}</td>
-            <td>{{ admin.correo }}</td>
-            <td>{{ admin.contraseña }}</td>
-            <td>
-            </td>
+        <tr>
+          <th class="text-left">Identification</th>
+          <th class="text-left">Name</th>
+          <th class="text-left">Last Name</th>
+          <th class="text-left">Gmail</th>
+          <th class="text-left">Password</th>
+          <th class="text-left">Options</th>
         </tr>
-    </tbody>
-  </v-table>
+      </thead>
+
+      <tbody>
+        <tr v-for="admin in administrador" :key="admin.cuiAdmin">
+          <td>{{ admin.cuiAdmin }}</td>
+          <td>{{ admin.nombre }}</td>
+          <td>{{ admin.apellido }}</td>
+          <td>{{ admin.correo }}</td>
+          <td>{{ admin.contraseña }}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </v-table>
   </div>
 </template>
 
-
-
-
 <script>
-import axios from "axios"
-import nuevoUser from './new.vue'
+import axios from "axios";
+import nuevoUser from "./new.vue";
 export default {
-data(){
-    return{
-        pruebnuebas: nuevoUser,
-        administrador: [],
-        
+  data() {
+    return {
+      pruebas: nuevoUser,
+      administrador: [],
     };
-},
+  },
 
-components:{
-  nuevoUser,
-},
+  components: {
+    nuevoUser,
+  },
 
-mounted(){
+  mounted() {
     this.obtenerAdmin();
-},
-methods: {
-    obtenerAdmin(){
-        axios
+  },
+  methods: {
+    obtenerAdmin() {
+      axios
         .get("http://localhost:8080/backendIPC2/api/admin")
         .then((response) => {
-            this.administrador = response.data;
+          this.administrador = response.data;
         })
-        .catch((error) =>{
-            console.error("error al obtener datos")
+        .catch((error) => {
+          console.error("error al obtener datos");
         });
-       
-   }
-}
-
+    },
+  },
 };
 </script>
 
-
 <style scoped>
-
-
-.table_Container{
+.table_Container {
   margin: 30px 10px;
   max-width: -800px;
   margin-left: 50px;
@@ -88,7 +77,8 @@ table {
   background-color: white;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px 15px;
   text-align: center;
@@ -101,10 +91,7 @@ th {
   text-transform: uppercase;
 }
 
-
-
 .btn {
   margin: 0px 5px;
 }
 </style>
-

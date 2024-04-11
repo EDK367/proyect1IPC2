@@ -122,7 +122,9 @@ public class contollerRecepcionista extends HttpServlet {
             psVerification.setString(2, correo);
             rsVerification = psVerification.executeQuery();
             if (rsVerification.next()) {
-                response.getWriter().print("ya existe este cui o correo en recepcionista");
+                //response.getWriter().print("ya existe este cui o correo en recepcionista");
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
             } else {
                 String sqlAdmin = "SELECT * FROM administrador WHERE cui_admin = ? OR correo = ?";
                 PreparedStatement psAdmin = connection.prepareStatement(sqlAdmin);
@@ -130,7 +132,9 @@ public class contollerRecepcionista extends HttpServlet {
                 psAdmin.setString(2, correo);
                 rsVerification = psAdmin.executeQuery();
                 if (rsVerification.next()) {
-                    response.getWriter().print("ya existe este cui o correo en admin");
+                    //response.getWriter().print("ya existe este cui o correo en admin");
+                    objeto = new JsonObject();
+                    response.getWriter().print(objeto);
                 } else {
                     String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ? OR correo = ?";
                     PreparedStatement psOperador = connection.prepareStatement(sqlOperador);
@@ -139,7 +143,6 @@ public class contollerRecepcionista extends HttpServlet {
                     rsVerification = psOperador.executeQuery();
                     if (rsVerification.next()) {
                         long cuiOperadorVerification = rsVerification.getLong("cui_operador");
-
                         if (cuiRecepcionista != cuiOperadorVerification) {
 
                             String sql = "INSERT INTO recepcionista (cui_recepcionista, nombre, apellido, correo, contraseña, cui_operador) VALUES (?, ?, ?, ?, ?, ?)";
@@ -153,10 +156,14 @@ public class contollerRecepcionista extends HttpServlet {
                             ps.executeUpdate();
                             response.getWriter().print("Todo salio bien");
                         } else {
-                            response.getWriter().print("Este cui o correo ya existe en operador");
+                            //response.getWriter().print("no existe este operador");
+                            objeto = new JsonObject();
+                            response.getWriter().print(objeto);
                         }
                     } else {
-                        response.getWriter().print("no existe este operador");
+                        //response.getWriter().print("Este cui o correo ya existe en operador");
+                        objeto = new JsonObject();
+                        response.getWriter().print(objeto);
                     }
                 }
             }
