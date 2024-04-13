@@ -247,13 +247,19 @@ public class controllerPrincipal extends HttpServlet {
                 ps.setString(4, contraseña);
                 ps.setLong(5, cuiAdmin);
                 ps.executeUpdate();
-                response.getWriter().print("Todo salio bien");
+                objeto = new JsonObject();
+                objeto.addProperty("cuiAdmin", cuiAdmin);
+                response.getWriter().print(objeto);
             }else{
-                response.getWriter().print("No existe el cui");
+                //response.getWriter().print("No existe el cui");
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
             }
 
         } catch (SQLException ex) {
-            response.getWriter().print("No se pudo realizar la actualizacion, muy probablemente tenga datos repetidos " + ex);
+            objeto = new JsonObject();
+            response.getWriter().print(objeto);
+            System.out.println("No se pudo realizar la actualizacion, muy probablemente tenga datos repetidos \" + ex");
         } catch (ClassNotFoundException ex) {
             response.getWriter().print("QUe hubo");
         } finally {

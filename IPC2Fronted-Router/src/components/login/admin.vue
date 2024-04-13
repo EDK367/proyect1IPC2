@@ -117,9 +117,10 @@ export default {
       axios
         .post("http://localhost:8080/backendIPC2/api/login", dataLogin)
         .then((response) => {
-          
+        
           if(Object.keys(response.data).length > 0){
-            store.commit('toggleFixedComponent', false)            
+            store.commit('toggleFixedComponent', false);
+            store.dispatch('saveLoginData', response.data);           
             router.push('/admin')
           }else{
             this.sheet = true;

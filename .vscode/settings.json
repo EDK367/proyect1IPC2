@@ -4,5 +4,6 @@
     "vscode-pets.petType": "turtle",
     "vscode-pets.position": "explorer",
     "vscode-pets.throwBallWithMouse": true,
-    "vscode-pets.theme": "none"
+    "vscode-pets.theme": "none",
+    "java.compile.nullAnalysis.mode": "disabled"
 }

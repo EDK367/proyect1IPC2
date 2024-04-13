@@ -7,8 +7,8 @@
         <v-list-item
           prepend-icon="mdi-account-outline"
           title="Perfil"
-          value="tables"
-          @click="changeComponent('tables')"
+          value="profiles"
+          @click="changeComponent('profiles')"
         ></v-list-item>
         <v-divider></v-divider>
 
@@ -28,7 +28,7 @@
 <v-list-item
             prepend-icon="mdi-account-voice"
             title="Recepcion"
-            value="tablesOp"
+            value="tablesRe"
             @click="changeComponent('tablesRe')"
           ></v-list-item>
 
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import profiles from "../components/dates/profiles.vue"
 import tables from "../components/administrador/adminUser.vue";
 import tablesOp from "../components/administrador/operator.vue";
 import tablesRe from "../components/administrador/recepcion.vue"
@@ -61,6 +62,7 @@ export default {
       use: tables,
       drawer: true,
       rail: true,
+      
     };
   },
 
@@ -73,6 +75,8 @@ export default {
         this.use = tablesOp;
       } else if(componentName === "tablesRe"){
         this.use = tablesRe;
+      }else if(componentName === "profiles"){
+        this.use = profiles;
       }
     },
   },
@@ -81,6 +85,7 @@ export default {
     tables,
     tablesOp,
     tablesRe,
+    profiles,
   },
 };
 </script>

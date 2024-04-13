@@ -53,7 +53,7 @@ export default {
       axios
         .get("http://localhost:8080/backendIPC2/api/recepcion")
         .then((response) => {
-            console.log(response.data)
+            
           this.receptionist = response.data;
         })
         .catch((error) => {

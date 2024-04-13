@@ -63,7 +63,6 @@ public class login extends HttpServlet {
             //veriifca si el existe en la tabla admin
             if (validarAdmin(identificador, password)) {
                 connection = data.conectar();
-                response.getWriter().print("Bienvenido ");
                 String admin = "SELECT * FROM administrador WHERE cui_admin = ?";
                 PreparedStatement ps = connection.prepareStatement(admin);
                 ps.setLong(1, identificador);
@@ -82,7 +81,6 @@ public class login extends HttpServlet {
                 //valida el operador si existe
             } else if (validarOperador(identificador, password)) {
                 connection = data.conectar();
-                response.getWriter().print("Bienvenido operador");
                 String operador = "SELECT * FROM operador WHERE cui_operador = ?";
                 PreparedStatement ps = connection.prepareStatement(operador);
                 ps.setLong(1, identificador);
@@ -101,7 +99,6 @@ public class login extends HttpServlet {
                 //validar recepcionista
             } else if (validarRecepcionista(identificador, password)) {
                 connection = data.conectar();
-                response.getWriter().print("Bienvenido ");
                 String recepcionista = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
                 PreparedStatement ps = connection.prepareStatement(recepcionista);
                 ps.setLong(1, identificador);
@@ -114,6 +111,8 @@ public class login extends HttpServlet {
                     objetoLogin.addProperty("correo", rs.getString("correo"));
                     objetoLogin.addProperty("contraseña", rs.getString("contraseña"));
                     System.out.println(objetoLogin);
+                    response.getWriter().print(gson.toJson(objetoLogin));
+                    objetoLogin = new JsonObject();
                 }
                 //si no cumple con ninguna de estas tres es que el usuario no existe por lo tanto manda
                 //un JSON vacio para decir que no existe

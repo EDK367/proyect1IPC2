@@ -19,7 +19,7 @@
         :rules="[rules.required]"
         density="compact"
         type="number"
-        placeholder="ID Operador"
+        placeholder="ID Operator"
         prepend-inner-icon="mdi-account-outline"
         variant="outlined"
       ></v-text-field>
@@ -88,18 +88,21 @@
 import axios from 'axios'
 //importar el router
 import router from '@/router'
+//importar el vuex
+import store from '@/store'
+
 export default {
   data: () => ({
     sheet: false,
     visible: false,
-    adminID: "",
+    operatorID: "",
     password: "",
 
     rules: {
       required: (value) => !!value || "Field is required",
     },
   }),
-
+  
   methods: {
     submitForm() {
       // Formar el objeto JSON con los datos ingresados
@@ -109,14 +112,16 @@ export default {
       };
       // Mostrar el objeto JSON en la consola del navegador
       console.log("Datos del formulario:", dataLogin);
-      const operdorJson = JSON.stringify(dataLogin);
+      const adminJson = JSON.stringify(dataLogin);
       //aca se envia el post
       axios
         .post("http://localhost:8080/backendIPC2/api/login", dataLogin)
         .then((response) => {
-          
+        
           if(Object.keys(response.data).length > 0){
-           router.push('/operador')
+            store.commit('toggleFixedComponent', false);
+            store.dispatch('saveLoginData', response.data);           
+            router.push('/operador')
           }else{
             this.sheet = true;
           }
@@ -126,6 +131,7 @@ export default {
         });
     },
   },
+
 };
 </script>
 
