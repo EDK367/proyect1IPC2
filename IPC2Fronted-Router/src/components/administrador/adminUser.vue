@@ -13,8 +13,6 @@
     </div>
     
       <thead> 
-        
-
         <tr>
           <th class="text-left">Identification</th>
           <th class="text-left">Name</th>
@@ -86,12 +84,15 @@ export default {
   mounted() {
     this.obtenerAdmin();
     //actualizar la tabla constantemente
-    setInterval(this.obtenerAdmin, 2000);
+    setInterval(this.obtenerAdmin, 5000);//2000 == 20 segundos
   },
+
+
   methods: {
     obtenerAdmin() {
-      axios
-        .get("http://localhost:8080/backendIPC2/api/admin")
+      axios //nombre de como lo declaraste
+        .get("http://localhost:8080/backendIPC2/api/admin")//el metodo que vas hacer
+        
         .then((response) => {
           this.administrador = response.data;
           

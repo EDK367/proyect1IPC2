@@ -58,7 +58,6 @@
                 v-model="contraseña"
                 :rules="[rules.required]"
                 label="Password*"
-                type="password"
                 required
               ></v-text-field>
             </v-col>

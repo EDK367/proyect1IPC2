@@ -10,7 +10,6 @@
           <th class="text-left">Gmail</th>
           <th class="text-left">Password</th>
           <th class="text-left">Operator</th>
-          <th class="text-left">Options</th>
         </tr>
       </thead>
 
@@ -22,8 +21,6 @@
           <td>{{ recepcion.correo }}</td>
           <td>{{ recepcion.contraseña }}</td>
           <td>{{ recepcion.cuiOperador }}</td>
-
-          <td></td>
         </tr>
       </tbody>
     </v-table>

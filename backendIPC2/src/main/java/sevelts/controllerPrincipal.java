@@ -155,6 +155,7 @@ public class controllerPrincipal extends HttpServlet {
                        // response.getWriter().print("Este cui o correo ya existe en recepcionista ");
                         objeto = new JsonObject();
                         response.getWriter().print(objeto);
+
                     }else {
                         String sql = "INSERT INTO administrador(cui_admin, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
                         PreparedStatement ps = connection.prepareStatement(sql);
@@ -164,10 +165,11 @@ public class controllerPrincipal extends HttpServlet {
                         ps.setString(4, newAdmin.getCorreo());
                         ps.setString(5, newAdmin.getContraseña());
                         ps.executeUpdate();
-                        response.getWriter().print("SI se actualizo ");
+                        //response.getWriter().print("SI se actualizo ");
                         objeto = new JsonObject();
                         objeto.addProperty("cuiAdmin", newAdmin.getCuiAdmin());
                         response.getWriter().print(objeto);
+                        
                     }
                 }
             }

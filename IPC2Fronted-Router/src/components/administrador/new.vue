@@ -56,7 +56,6 @@
                 v-model="contraseña"
                 :rules="[rules.required]"
                 label="Password*"
-                type="password"
                 required
               ></v-text-field>
             </v-col>
@@ -156,7 +155,8 @@ export default {
 
   methods: {
     closeDialogAndClearFields() {
-      (this.dialog = false), this.clearTextFields();
+      (this.dialog = false), 
+      this.clearTextFields();
     },
 
     clearTextFields() {
@@ -167,6 +167,7 @@ export default {
       this.contraseña = "";
       this.rank = "";
     },
+
     //aca esta la logica para guardar los datos y responder segun sea lo necesario
     saveDialogAndSubmitForm() {
       this.submitForm();
@@ -187,6 +188,7 @@ export default {
         correo: this.correo,
         contraseña: this.contraseña,
       };
+      
       const jsonUser = JSON.stringify(create);
       const jsonUserOp = JSON.stringify(createOperator);
       console.log(create);

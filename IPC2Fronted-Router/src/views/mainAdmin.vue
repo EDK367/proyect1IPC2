@@ -91,5 +91,5 @@ export default {
 </script>
 
 <style>
-/* Estilos CSS si los necesitas */
+
 </style>

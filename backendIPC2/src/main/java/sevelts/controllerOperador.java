@@ -169,7 +169,9 @@ public class controllerOperador extends HttpServlet {
                 }
             }
         } catch (SQLException ex) {
-            response.getWriter().print("Date duplicate, cui or gmail " + ex);
+            objeto = new JsonObject();
+            response.getWriter().print(objeto);
+            System.out.println("Correo duplicado " + ex);
         } catch (ClassNotFoundException ex) {
             response.getWriter().print("pura mamada del java");
         } finally {
@@ -240,11 +242,16 @@ public class controllerOperador extends HttpServlet {
                 response.getWriter().print("Todo salio bien");
 
             } else {
-                response.getWriter().print("No existe el cui");
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
+                //response.getWriter().print("No existe el cui");
             }
 
         } catch (SQLException ex) {
-            response.getWriter().print("No se pudo realizar la actualizacion, muy probablemente tenga datos repetidos " + ex);
+            objeto = new JsonObject();
+            response.getWriter().print(objeto);
+            //response.getWriter().print("No se pudo realizar la actualizacion, muy probablemente tenga datos repetidos " + ex);
+            System.out.println("No se pudo realizar la actualizacion, muy probablemente tenga datos repetidos " + ex);
         } catch (ClassNotFoundException ex) {
             response.getWriter().print("QUe hubo");
         } finally {

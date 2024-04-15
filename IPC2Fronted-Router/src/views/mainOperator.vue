@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import profiles from "../components/dates/profilesOperador.vue"
+import profiles from "../components/dates/profiles.vue"
 import tableRece from "../components/operadores/recepcionistasTable.vue"
 export default {
   data() {
@@ -57,12 +57,15 @@ export default {
     changeComponent(componentName) {
       if (componentName === "tableRece") {
         this.use = tableRece;
+      }else if(componentName === "profiles"){
+        this.use = profiles;
       }
     },
   },
 
   components: {
     tableRece,
+    profiles
   },
 };
 </script>

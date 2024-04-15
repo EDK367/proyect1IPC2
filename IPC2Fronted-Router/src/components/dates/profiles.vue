@@ -1,5 +1,5 @@
 <template>
-  <h1 class="title">Datos del Administrador</h1>
+  <h1 class="title">Datos del User</h1>
 <div class="container">
   <table>
     <tr v-for="(value, key) in loginData" :key="key">
