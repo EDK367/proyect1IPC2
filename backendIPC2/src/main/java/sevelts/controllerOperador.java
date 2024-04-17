@@ -229,7 +229,7 @@ public class controllerOperador extends HttpServlet {
             psVerification.setLong(1, cuiOperador);
             rsVerification = psVerification.executeQuery();
 
-            if (rsVerification.next()) {
+            if (rsVerification.next()){
 
                 String sql = "UPDATE operador SET  nombre = ?, apellido = ?, correo = ?, contraseña = ? WHERE cui_operador = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);

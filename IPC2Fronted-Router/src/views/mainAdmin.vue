@@ -1,4 +1,5 @@
 <template>
+
   <v-card>
     <component :is="use" :key="use"></component>
     <v-layout>
@@ -37,17 +38,33 @@
             prepend-icon="mdi-camera-control"
             title="Points"
             value="points"
+            @click="changeComponent('tablesPoint')"
           ></v-list-item>
+
           <v-list-item
             prepend-icon="mdi-ballot-outline"
             title="Reports"
             value="reports"
+          ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-bank"
+            title="TarifaGlobal"
+            value="tarifasGlobales"
+            @click="changeComponent('tarifaGlobal')"
+          ></v-list-item>
+
+          <v-list-item
+            prepend-icon="mdi-bank-transfer"
+            title="TarifaLocal"
+            value="tarifasLocal"
+            @click="changeComponent('tarifaLocal')"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 250px"></v-main>
     </v-layout>
   </v-card>
+  
 </template>
 
 <script>
@@ -55,7 +72,9 @@ import profiles from "../components/dates/profiles.vue"
 import tables from "../components/administrador/adminUser.vue";
 import tablesOp from "../components/administrador/operator.vue";
 import tablesRe from "../components/administrador/recepcion.vue"
-
+import tablesPoint from "../components/administrador/points/points.vue"
+import tarifaGlobal from "../components/administrador/tarifas/global.vue"
+import tarifaLocal from "../components/administrador/tarifas/local.vue"
 export default {
   data() {
     return {
@@ -77,6 +96,12 @@ export default {
         this.use = tablesRe;
       }else if(componentName === "profiles"){
         this.use = profiles;
+      }else if(componentName === "tablesPoint"){
+        this.use = tablesPoint;
+      }else if(componentName === "tarifaGlobal"){
+        this.use = tarifaGlobal;
+      }else if(componentName === "tarifaLocal"){
+        this.use = tarifaLocal;
       }
     },
   },
@@ -85,7 +110,11 @@ export default {
     tables,
     tablesOp,
     tablesRe,
+    tablesPoint,
     profiles,
+    tarifaGlobal,
+    tarifaLocal,
+    
   },
 };
 </script>

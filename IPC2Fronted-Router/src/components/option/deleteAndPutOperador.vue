@@ -12,7 +12,7 @@
         ></v-btn>
       </template>
 
-      <v-card prepend-icon="mdi-account" title="User Admin">
+      <v-card prepend-icon="mdi-account" title="User Operator">
         <v-card-text>
           <v-row dense>
             <v-col cols="12" md="4" sm="6">

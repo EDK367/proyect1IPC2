@@ -122,10 +122,10 @@ public class controllerPuntoControl extends HttpServlet {
                     PreparedStatement psConnection = connection.prepareStatement(sqlConnection);
                      psConnection.executeQuery();
 
-                    String sqlBodega = "INSERT INTO bodega (NoBodega, cui_operador) VALUES (?, ?)";
+                    String sqlBodega = "INSERT INTO bodega (NoBodega, IDControl) VALUES (?, ?)";
                     PreparedStatement psBodega = connection.prepareStatement(sqlBodega);
                     psBodega.setInt(1, idControl);
-                    psBodega.setLong(2, cuiOperador);
+                    psBodega.setLong(2, idControl);
 
 
                     String sql = "INSERT INTO punto_control (idControl, nombreControl, cui_operador) VALUES (?, ?, ?)";
@@ -198,6 +198,7 @@ public class controllerPuntoControl extends HttpServlet {
                     ps.setInt(3, IdControl);
                     ps.executeUpdate();
                     response.getWriter().print("SI se actualizo " + IdControl);
+
                 }else{
                     response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
                 }

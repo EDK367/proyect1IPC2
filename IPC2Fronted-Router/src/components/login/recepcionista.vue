@@ -115,7 +115,7 @@ export default {
         .post("http://localhost:8080/backendIPC2/api/login", dataLogin)
         .then((response) => {
           
-          if(Object.keys(response.data).length > 0){
+          if(response.data.hasOwnProperty('cuicuiRecepcionista')){
            router.push('/recepcion')
           }else{
             this.sheet = true;

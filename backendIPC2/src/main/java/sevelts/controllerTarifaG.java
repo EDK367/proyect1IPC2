@@ -110,12 +110,16 @@ public class controllerTarifaG extends HttpServlet {
                 ps.setString(2, fechaCreacion);
                 ps.setLong(3, cuiAdmin);
                 ps.executeUpdate();
-                response.getWriter().print("Tarifa global registrada");
+                response.getWriter().print(objeto);
             } else {
-                response.getWriter().print("No existe el admin en la base de datos " + cuiAdmin);
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
             }
         } catch (SQLException e) {
-            response.getWriter().print("Error en la inserción: " + e.getMessage());
+            objeto = new JsonObject();
+            response.getWriter().print(objeto);
+            //response.getWriter().print("Error en la inserción: " + e.getMessage());
+            System.out.println("Error en la inserción: " + e.getMessage());
         } finally {
             data.desconectar();
         }
