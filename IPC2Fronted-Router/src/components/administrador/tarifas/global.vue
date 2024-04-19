@@ -15,6 +15,7 @@
           <th class="text-left">Quota</th>
           <th class="text-left">Start Date</th>
           <th class="text-left">Charge Admin</th>
+          <th class="text-left">Option</th>
         </tr>
       </thead>
 
@@ -24,6 +25,14 @@
           <td>{{ tari.tarifaG }}</td>
           <td>{{ tari.fechaInicio }}</td>
           <td>{{tari.cuiAdmin}}</td>
+          <td>
+            <v-icon
+        size="small"
+        @click="deleteItem(tari)"
+      >
+        mdi-delete
+      </v-icon>
+          </td>
         </tr>
       </tbody>
     </v-table>

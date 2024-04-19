@@ -12,6 +12,7 @@
           <th class="text-left">Quota Local</th>
           <th class="text-left">ID point</th>
           <th class="text-left">Charge Operator</th>
+          <th class="text-left">Option</th>
         </tr>
       </thead>
 
@@ -21,6 +22,14 @@
           <td>{{ tari.tarifaLocal }}</td>
           <td>{{ tari.IDControl }}</td>
           <td>{{tari.cuiOperador}}</td>
+          <td>
+            <v-icon
+        size="small"
+        @click="deleteItem(tari)"
+      >
+        mdi-delete
+      </v-icon>
+          </td>
         </tr>
       </tbody>
     </v-table>

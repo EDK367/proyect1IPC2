@@ -2,12 +2,12 @@
   <h1>Table of Points</h1>
     
   <div class="table_Container">
-
+    <div class = "new">
+<newPoint/>
+</div>
     <v-table
      height="400px" 
      fixed-header>
-      
-    
       <thead> 
         <tr>
           <th class="text-left">ID the Point</th>
@@ -54,7 +54,7 @@
 
 <script>
 import axios from "axios";
-
+import newPoint from "./newPoint.vue"
 
 export default {
   
@@ -67,7 +67,7 @@ export default {
   },
 
   components: {
-
+  newPoint
   },
 
   mounted() {
