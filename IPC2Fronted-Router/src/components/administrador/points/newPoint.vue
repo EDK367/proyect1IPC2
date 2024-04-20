@@ -5,7 +5,7 @@
         <v-btn
           class="text-none font-weight-regular"
           prepend-icon="mdi-account"
-          text="New User"
+          text="New Point Controller"
           variant="tonal"
           v-bind="activatorProps"
         ></v-btn>
@@ -16,9 +16,9 @@
           <v-row dense>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
-                v-model="idAdmin"
+                v-model="idPoint"
                 :rules="[rules.required]"
-                label="ID*"
+                label="ID Point*"
                 type="number"
                 required
               ></v-text-field>
@@ -32,33 +32,15 @@
                 required
               ></v-text-field>
             </v-col>
-
             <v-col cols="12" md="4" sm="6">
               <v-text-field
-                v-model="apellido"
+                v-model="idOperator"
                 :rules="[rules.required]"
-                label="Last name*"
+                label="Charge Operator*"
                 required
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12" md="4" sm="6">
-              <v-text-field
-                v-model="correo"
-                :rules="[rules.required]"
-                label="Email*"
-                required
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="4" sm="6">
-              <v-text-field
-                v-model="contraseña"
-                :rules="[rules.required]"
-                label="Password*"
-                required
-              ></v-text-field>
-            </v-col>
 
             <v-col cols="12" sm="6"> </v-col>
           </v-row>
@@ -67,16 +49,6 @@
             >*indicates required field</small
           >
         </v-card-text>
-
-        <v-col cols="12" sm="6">
-          <v-select
-            v-model="rank"
-            :rules="[rules.required]"
-            :items="['Admin', 'Operator']"
-            label="Rank*"
-            required
-          ></v-select>
-        </v-col>
 
         <v-divider></v-divider>
 
@@ -94,12 +66,9 @@
             text="Save"
             variant="tonal"
             :disabled="
-              !idAdmin ||
+              !idPoint ||
               !nombre ||
-              !apellido ||
-              !correo ||
-              !contraseña ||
-              !rank
+              !idOperator
             "
             @click="saveDialogAndSubmitForm"
           ></v-btn>
@@ -125,8 +94,9 @@
           <br>
 
           <div>
-           El ID o el correo Electronico ya existen en la base de datos
-           Revisar los datos
+           Hubo un error al crear el nuevo punto de control por favor verificar los datos 
+           <br>
+           Y verifique si el operador existe
           </div>
         </v-card-text>
       </v-card>
@@ -141,12 +111,9 @@ export default {
   data: () => ({
     sheet: false,
     dialog: false,
-    idAdmin: "",
+    idPoint: "",
     nombre: "",
-    apellido: "",
-    correo: "",
-    contraseña: "",
-    rank: "",
+    idOperator:"",
     rules: {
       required: (value) => !!value || "Field is required",
     },
@@ -160,12 +127,10 @@ export default {
     },
 
     clearTextFields() {
-      this.idAdmin = "";
+      this.idPoint = "";
       this.nombre = "";
-      this.apellido = "";
-      this.correo = "";
-      this.contraseña = "";
-      this.rank = "";
+      this.idOperator = "";
+      
     },
 
     //aca esta la logica para guardar los datos y responder segun sea lo necesario
@@ -174,65 +139,31 @@ export default {
     },
 
     submitForm() {
-      const create = {
-        cuiAdmin: this.idAdmin,
+      const createPoint = {
+        IdControl: this.idPoint,
         nombre: this.nombre,
-        apellido: this.apellido,
-        correo: this.correo,
-        contraseña: this.contraseña,
-      };
-      const createOperator = {
-        cuiOperador: this.idAdmin,
-        nombre: this.nombre,
-        apellido: this.apellido,
-        correo: this.correo,
-        contraseña: this.contraseña,
+        cuiOperador: this.idOperator,
       };
       
-      const jsonUser = JSON.stringify(create);
-      const jsonUserOp = JSON.stringify(createOperator);
-      console.log(create);
+      const jsonPoint = JSON.stringify(createPoint);
+      console.log(createPoint);
 
-      //detecta para donde ira el post
-      if (this.rank === "Admin") {
-        console.log("Admin");
-        axios
-          .post("http://localhost:8080/backendIPC2/api/admin", create)
-          .then((response) => {
-            console.log(response.data);
-            if (Object.keys(response.data).length > 0) {
-              console.log("Usuario creado exitosamente");
-              this.dialog = false;
-            } else {
-              console.log("No se pudo crear");
-              this.sheet = true;
-            }
-          })
-          .catch((error) => {
+      axios
+      .post("http://localhost:8080/backendIPC2/api/point", jsonPoint)
+      .then((response) => {
+        if(Object.keys(response.data).length > 0){
+        this.dialog = false;
+        this.clearTextFields
+        console.log(response.data)
+        }else{
+          this.sheet = true;
+        }
+      })
+      .catch((error) => {
             console.error("Error al enviar la solicitud:", error);
             
           });
-      } else if (this.rank === "Operator") {
-        console.log("Operator");
-        axios
-        .post("http://localhost:8080/backendIPC2/api/operador", createOperator)
-         .then((response) => {
-            console.log(response.data);
-            if (Object.keys(response.data).length > 0) {
-              console.log("Usuario creado exitosamente");
-              this.dialog = false;
-            } else {
-              console.log("No se pudo crear");
-              this.sheet = true;
-            }
-          })
-          .catch((error) => {
-            console.error("Error al enviar la solicitud:", error);
-          });
-      } else {
-        console.log("Hay un error de codigo");
-      }
-    },
+    }
   },
 };
 </script>

@@ -105,7 +105,7 @@ public class login extends HttpServlet {
                 rs = ps.executeQuery();
                 if (rs.next()) {
                     //valida y obtiene el Json
-                    objetoLogin.addProperty("cuiRecepcion", rs.getLong("cui_recepcionista"));
+                    objetoLogin.addProperty("cuiRecepcionista", rs.getLong("cui_recepcionista"));
                     objetoLogin.addProperty("nombre", rs.getString("nombre"));
                     objetoLogin.addProperty("apellido", rs.getString("apellido"));
                     objetoLogin.addProperty("correo", rs.getString("correo"));

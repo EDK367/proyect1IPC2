@@ -1,18 +1,16 @@
 <template>
   <h1>Table of Users Admins</h1>
-    
+
   <div class="table_Container">
-    <div class = "new">
-<nuevoUser />
-</div>
-    <v-table
-     height="400px" 
-     fixed-header>
-      <div class="deletes">
-      <deletes />
+    <div class="new">
+      <nuevoUser />
     </div>
-    
-      <thead> 
+    <v-table height="400px" fixed-header>
+      <div class="deletes">
+        <deletes />
+      </div>
+
+      <thead>
         <tr>
           <th class="text-left">Identification</th>
           <th class="text-left">Name</th>
@@ -32,41 +30,45 @@
           <td>{{ admin.contraseña }}</td>
           <td>
             <v-btn
-            @click="option(admin)"
-             prepend-icon="$vuetify" 
-             variant="text"
-             > SELECT </v-btn>
-              <v-icon
-        size="small"
-        @click="deleteItem(admin)"
-      >
-        mdi-delete
-      </v-icon>
+              @click="option(admin)"
+              prepend-icon="$vuetify"
+              variant="text"
+            >
+              SELECT
+            </v-btn>
+            <v-icon size="small" @click="deleteItem(admin)">
+              mdi-delete
+            </v-icon>
           </td>
         </tr>
       </tbody>
     </v-table>
-      <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this USER?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+    <v-dialog v-model="dialogDelete" max-width="500px">
+      <v-card>
+        <v-card-title class="text-h5"
+          >Are you sure you want to delete this USER?</v-card-title
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
+            >Cancel</v-btn
+          >
+          <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm"
+            >OK</v-btn
+          >
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import nuevoUser from "./new.vue";
-import deletes from "../option/deleteAndPut.vue"
+import deletes from "../option/deleteAndPut.vue";
 
 export default {
-  
   data() {
     return {
       deleteOption: null,
@@ -84,42 +86,41 @@ export default {
   mounted() {
     this.obtenerAdmin();
     //actualizar la tabla constantemente
-    setInterval(this.obtenerAdmin, 5000);//2000 == 20 segundos
+    setInterval(this.obtenerAdmin, 5000); //2000 == 20 segundos
   },
-
 
   methods: {
     obtenerAdmin() {
       axios //nombre de como lo declaraste
-        .get("http://localhost:8080/backendIPC2/api/admin")//el metodo que vas hacer
-        
+        .get("http://localhost:8080/backendIPC2/api/admin") //el metodo que vas hacer
+
         .then((response) => {
           this.administrador = response.data;
-          
         })
         .catch((error) => {
           console.error("error al obtener datos");
         });
-
-
     },
-     //metodo para editar y eliminar se obtiene el form 
-    option(admin){
-      localStorage.setItem('optionUser', JSON.stringify(admin));
-       console.log('Contenido de localStorage:', localStorage.getItem('optionUser'));
+    //metodo para editar y eliminar se obtiene el form
+    option(admin) {
+      localStorage.setItem("optionUser", JSON.stringify(admin));
+      console.log(
+        "Contenido de localStorage:",
+        localStorage.getItem("optionUser")
+      );
     },
 
-    deleteItem(admin){
-      console.log("Delete", admin)
+    deleteItem(admin) {
+      console.log("Delete", admin);
       this.deleteOption = admin;
       this.dialogDelete = true;
     },
-    closeDelete(){
+    closeDelete() {
       this.dialogDelete = false;
     },
-    deleteItemConfirm(admin){
+    deleteItemConfirm(admin) {
       this.dialogDelete = false;
-       const adminJson = JSON.stringify(this.deleteOption);
+      const adminJson = JSON.stringify(this.deleteOption);
       console.log("Este es el JSON del administrador:", adminJson);
 
       axios
@@ -133,22 +134,21 @@ export default {
         .catch((error) => {
           console.error("Error al eliminar administrador", error);
         });
-  }
+    },
   },
 };
 </script>
 
 <style scoped>
-.new{
+.new {
   top: 90px;
   position: absolute;
   left: 10;
 }
-.deletes{
+.deletes {
   top: 90px;
   position: absolute;
   right: 0;
-  
 }
 .table_Container {
   margin: 100px 10px;

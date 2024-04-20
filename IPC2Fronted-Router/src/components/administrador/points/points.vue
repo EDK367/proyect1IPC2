@@ -8,6 +8,9 @@
     <v-table
      height="400px" 
      fixed-header>
+           <div class="deletes">
+      <editPoint/>
+    </div>
       <thead> 
         <tr>
           <th class="text-left">ID the Point</th>
@@ -55,7 +58,7 @@
 <script>
 import axios from "axios";
 import newPoint from "./newPoint.vue"
-
+import editPoint from "./deleteAndPutPoint.vue"
 export default {
   
   data() {
@@ -67,7 +70,8 @@ export default {
   },
 
   components: {
-  newPoint
+  newPoint,
+  editPoint,
   },
 
   mounted() {
@@ -94,8 +98,8 @@ export default {
     },
      //metodo para editar y eliminar se obtiene el form 
     option(point){
-      localStorage.setItem('optionUser', JSON.stringify(point));
-       console.log('Contenido de localStorage:', localStorage.getItem('optionUser'));
+      localStorage.setItem('optionPoint', JSON.stringify(point));
+       console.log('Contenido de point:', localStorage.getItem('optionPoint'));
     },
 
     deleteItem(point){
@@ -109,7 +113,7 @@ export default {
     deleteItemConfirm(operador){
       this.dialogDelete = false;
        const pointJson = JSON.stringify(this.deleteOption);
-      console.log("Este es el JSON del administrador:", pointJson);
+      console.log("Este es el JSON del point:", pointJson);
 
       axios
         .delete("http://localhost:8080/backendIPC2/api/point", {

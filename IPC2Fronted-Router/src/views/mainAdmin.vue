@@ -1,5 +1,4 @@
 <template>
-
   <v-card>
     <component :is="use" :key="use"></component>
     <v-layout>
@@ -26,19 +25,32 @@
             value="tablesOp"
             @click="changeComponent('tablesOp')"
           ></v-list-item>
-<v-list-item
+          <v-list-item
             prepend-icon="mdi-account-voice"
             title="Recepcion"
             value="tablesRe"
             @click="changeComponent('tablesRe')"
           ></v-list-item>
 
-
           <v-list-item
             prepend-icon="mdi-camera-control"
             title="Points"
             value="points"
             @click="changeComponent('tablesPoint')"
+          ></v-list-item>
+
+          <v-list-item
+            prepend-icon="mdi-boom-gate"
+            title="Routes"
+            value="routes"
+            @click="changeComponent('tableRouter')"
+          ></v-list-item>
+
+          <v-list-item
+            prepend-icon="mdi-boom-gate-alert"
+            title="Info Router"
+            value="routersInfo"
+            @click="changeComponent('tableRouterInfo')"
           ></v-list-item>
 
           <v-list-item
@@ -64,24 +76,23 @@
       <v-main style="height: 250px"></v-main>
     </v-layout>
   </v-card>
-  
 </template>
 
 <script>
-import profiles from "../components/dates/profiles.vue"
+import profiles from "../components/dates/profiles.vue";
 import tables from "../components/administrador/adminUser.vue";
 import tablesOp from "../components/administrador/operator.vue";
-import tablesRe from "../components/administrador/recepcion.vue"
-import tablesPoint from "../components/administrador/points/points.vue"
-import tarifaGlobal from "../components/administrador/tarifas/global.vue"
-import tarifaLocal from "../components/administrador/tarifas/local.vue"
+import tablesRe from "../components/administrador/recepcion.vue";
+import tablesPoint from "../components/administrador/points/points.vue";
+import tablesRouter from "../components/administrador/routers/router.vue";
+import tarifaGlobal from "../components/administrador/tarifas/global.vue";
+import tarifaLocal from "../components/administrador/tarifas/local.vue";
 export default {
   data() {
     return {
       use: tables,
       drawer: true,
       rail: true,
-      
     };
   },
 
@@ -92,16 +103,19 @@ export default {
         this.use = tables;
       } else if (componentName === "tablesOp") {
         this.use = tablesOp;
-      } else if(componentName === "tablesRe"){
+      } else if (componentName === "tablesRe") {
         this.use = tablesRe;
-      }else if(componentName === "profiles"){
+      } else if (componentName === "profiles") {
         this.use = profiles;
-      }else if(componentName === "tablesPoint"){
+      } else if (componentName === "tablesPoint") {
         this.use = tablesPoint;
-      }else if(componentName === "tarifaGlobal"){
+      } else if (componentName === "tarifaGlobal") {
         this.use = tarifaGlobal;
-      }else if(componentName === "tarifaLocal"){
+      } else if (componentName === "tarifaLocal") {
         this.use = tarifaLocal;
+      }else if(componentName === "tableRouter"){
+        this.use = tablesRouter;
+        
       }
     },
   },
@@ -111,14 +125,12 @@ export default {
     tablesOp,
     tablesRe,
     tablesPoint,
+    tablesRouter,
     profiles,
     tarifaGlobal,
     tarifaLocal,
-    
   },
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

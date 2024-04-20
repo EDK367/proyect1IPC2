@@ -116,7 +116,9 @@ public class controllerPuntoControl extends HttpServlet {
                 psVerificationBodega.setInt(1, idControl);
                 rsVerification = psVerificationBodega.executeQuery();
                 if(rsVerification.next()){
-                    response.getWriter().print("No se puede insertar el punto de control " + idControl + " ya que existe una bodega enlazada");
+                    objeto = new JsonObject();
+                    response.getWriter().print(objeto);
+                    System.out.println("No se puede insertar el punto de control " + idControl + " ya que existe una bodega enlazada");
                 }else {
                     String sqlConnection = "SELECT * FROM punto_control";
                     PreparedStatement psConnection = connection.prepareStatement(sqlConnection);
@@ -135,13 +137,23 @@ public class controllerPuntoControl extends HttpServlet {
                     ps.setLong(3, cuiOperador);
                     ps.executeUpdate();
                     psBodega.executeUpdate();
-                    response.getWriter().print("SI se inserto " + newPoint + psBodega);
+
+                    objeto = new JsonObject();
+                    objeto.addProperty("IdControl", idControl);
+                    objeto.addProperty("nombre", nombre);
+                    objeto.addProperty("cuiOperador", cuiOperador);
+                    response.getWriter().print(objeto);
+
                 }
             }else{
-                response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
+                //response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
             }
         }catch(SQLException ex){
-                response.getWriter().print("Duplicate data " + ex);
+            //response.getWriter().print("Duplicate data " + ex);
+            objeto = new JsonObject();
+            response.getWriter().print(objeto);
         }finally {
             if (rsVerification != null) {
                 rsVerification.close();
@@ -159,9 +171,14 @@ public class controllerPuntoControl extends HttpServlet {
         int IdControl = objeto.get("IdControl").getAsInt();
         try {
             connection = data.conectar();
+            String sqlBodega = "DELETE FROM bodega WHERE NoBodega = ?";
+            PreparedStatement psBodega = connection.prepareStatement(sqlBodega);
+            psBodega.setInt(1, IdControl);
             String sql = "DELETE FROM punto_control WHERE IdControl = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, IdControl);
+            psBodega.executeUpdate();
+
             ps.executeUpdate();
 
             response.getWriter().print("Se ha eliminado el dato " + IdControl);
@@ -197,13 +214,20 @@ public class controllerPuntoControl extends HttpServlet {
                     ps.setLong(2, cuiOperador);
                     ps.setInt(3, IdControl);
                     ps.executeUpdate();
-                    response.getWriter().print("SI se actualizo " + IdControl);
+                    //response.getWriter().print("SI se actualizo " + IdControl);
+                    objeto = new JsonObject();
+                    objeto.addProperty("IdControl", IdControl);
+                    response.getWriter().print(objeto);
 
                 }else{
-                    response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
+                    objeto = new JsonObject();
+                    response.getWriter().print(objeto);
+                   // response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
                 }
             } catch(SQLException ex){
-                response.getWriter().print("Error al actualizar " + ex);
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
+                //response.getWriter().print("Error al actualizar " + ex);
             } finally {
                 data.desconectar();
             }

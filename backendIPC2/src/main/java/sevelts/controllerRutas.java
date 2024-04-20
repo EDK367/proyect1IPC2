@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-@WebServlet("/api/route")
+@WebServlet("/api/router")
 public class controllerRutas extends HttpServlet {
     conexionData data = new conexionData();
     Connection connection = null;

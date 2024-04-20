@@ -114,8 +114,8 @@ export default {
       axios
         .post("http://localhost:8080/backendIPC2/api/login", dataLogin)
         .then((response) => {
-          
-          if(response.data.hasOwnProperty('cuicuiRecepcionista')){
+          console.log(response.data)
+          if(response.data.hasOwnProperty('cuiRecepcionista')){
            router.push('/recepcion')
           }else{
             this.sheet = true;
