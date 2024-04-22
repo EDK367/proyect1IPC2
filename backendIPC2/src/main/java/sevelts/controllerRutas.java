@@ -173,34 +173,60 @@ public class controllerRutas extends HttpServlet {
         }
     }
 
+    @SneakyThrows
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doOptions(request, response);
-        JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
-        int idRuta = objeto.get("idRuta").getAsInt();
+        int idRuta = Integer.parseInt(request.getParameter("idRuta"));
         ResultSet rsVerification = null;
         try {
             connection = data.conectar();
-            //verificacion si existe
             String sqlVerification = "SELECT * FROM ruta WHERE idRuta = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
             psVerification.setInt(1, idRuta);
             rsVerification = psVerification.executeQuery();
-            if (rsVerification.next()) {
-                String sql = "DELETE FROM ruta WHERE idRuta = ?";
-                PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setInt(1, idRuta);
-                ps.executeUpdate();
-                response.getWriter().print("ruta eliminada");
-            } else {
+            if(rsVerification.next()){
+                String sqlTrayecto = "SELECT * FROM trayecto WHERE idRuta = ?";
+                PreparedStatement psTrayecto = connection.prepareStatement(sqlTrayecto);
+                psTrayecto.setInt(1, idRuta);
+                rsVerification = psTrayecto.executeQuery();
+                if(rsVerification.next()){
+                    String sqlTrayectoActivate = "SELECT * FROM trayecto WHERE idRuta = ? AND activate = 1";
+                    PreparedStatement psTrayectoActivate = connection.prepareStatement(sqlTrayectoActivate);
+                    psTrayectoActivate.setInt(1, idRuta);
+                    rsVerification = psTrayectoActivate.executeQuery();
+                    if(rsVerification.next()){
+                        response.getWriter().print("ruta activa");
+                    }else{
+                        String sqlTrayectoDelete = "DELETE FROM trayecto WHERE idRuta = ?";
+                        PreparedStatement psTrayectoDelete = connection.prepareStatement(sqlTrayectoDelete);
+                        psTrayectoDelete.setInt(1, idRuta);
+                        psTrayectoDelete.executeUpdate();
+
+                        String sql = "DELETE FROM ruta WHERE idRuta = ?";
+                        PreparedStatement ps = connection.prepareStatement(sql);
+                        ps.setInt(1, idRuta);
+                        ps.executeUpdate();
+                        response.getWriter().print("ruta eliminada");
+                    }
+                }else{
+                    String sql = "DELETE FROM ruta WHERE idRuta = ?";
+                    PreparedStatement ps = connection.prepareStatement(sql);
+                    ps.setInt(1, idRuta);
+                    ps.executeUpdate();
+                    response.getWriter().print("ruta eliminada");
+                }
+            }else{
                 response.getWriter().print("ruta no existe");
             }
+
         } catch (SQLException e) {
             response.getWriter().print("Error inesperado " + e);
-        } catch (ClassNotFoundException e) {
-            response.getWriter().print("Error inesperado " + e);
         } finally {
+            if(rsVerification != null){
+                rsVerification.close();
+            }
             data.desconectar();
         }
     }
