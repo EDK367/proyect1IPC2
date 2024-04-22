@@ -114,7 +114,7 @@ public class controllerRutas extends HttpServlet {
 
             if (rsVerification.next()) {
                 response.getWriter().print("ya existe esta ruta");
-            }else{
+            } else {
                 String sql = "INSERT INTO ruta(idRuta, cantidadPuntoControl, puntoInicio, puntoFin) VALUES (?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setInt(1, newRuta.getIdRuta());
@@ -124,7 +124,7 @@ public class controllerRutas extends HttpServlet {
                 ps.executeUpdate();
                 response.getWriter().print("ruta registrada");
             }
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             response.getWriter().print("Error inesperado " + e);
         } catch (ClassNotFoundException e) {
             response.getWriter().print("Error inesperado " + e);
@@ -161,10 +161,10 @@ public class controllerRutas extends HttpServlet {
                 ps.setInt(4, idRuta);
                 ps.executeUpdate();
                 response.getWriter().print("ruta actualizada");
-            }else{
+            } else {
                 response.getWriter().print("ruta no existe");
             }
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             response.getWriter().print("Error inesperado " + e);
         } catch (ClassNotFoundException e) {
             response.getWriter().print("Error inesperado " + e);
@@ -193,10 +193,10 @@ public class controllerRutas extends HttpServlet {
                 ps.setInt(1, idRuta);
                 ps.executeUpdate();
                 response.getWriter().print("ruta eliminada");
-            }else{
+            } else {
                 response.getWriter().print("ruta no existe");
             }
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             response.getWriter().print("Error inesperado " + e);
         } catch (ClassNotFoundException e) {
             response.getWriter().print("Error inesperado " + e);
@@ -204,6 +204,7 @@ public class controllerRutas extends HttpServlet {
             data.desconectar();
         }
     }
+
     @Override
     public String getServletInfo() {
 

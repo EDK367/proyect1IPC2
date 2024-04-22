@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class conexionData {
-    
+
     private static final String URL = "jdbc:mysql://localhost:3306/proyecto";
     private static final String USER = "Denilson";
     private static final String PASSWORD = "Denilson22";

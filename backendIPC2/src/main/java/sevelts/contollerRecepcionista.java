@@ -263,7 +263,6 @@ public class contollerRecepcionista extends HttpServlet {
     }//fin del put
 
 
-
     @Override
     public String getServletInfo() {
 

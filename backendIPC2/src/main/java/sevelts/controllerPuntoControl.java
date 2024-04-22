@@ -1,4 +1,5 @@
 package sevelts;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dataBase.conexionData;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import models.puntoControl;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -48,7 +50,7 @@ public class controllerPuntoControl extends HttpServlet {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization");
     }
 
-//metodo CRUD para ver un nuevo punto de control
+    //metodo CRUD para ver un nuevo punto de control
     @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -104,25 +106,25 @@ public class controllerPuntoControl extends HttpServlet {
 
         ResultSet rsVerification = null;
 
-        try{
+        try {
             connection = data.conectar();
             String sqlVerification = "SELECT * FROM operador WHERE cui_operador = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
             psVerification.setLong(1, cuiOperador);
             rsVerification = psVerification.executeQuery();
-            if(rsVerification.next()){
+            if (rsVerification.next()) {
                 String sqlVerificationBodega = "SELECT * FROM bodega WHERE NoBodega = ?";
                 PreparedStatement psVerificationBodega = connection.prepareStatement(sqlVerificationBodega);
                 psVerificationBodega.setInt(1, idControl);
                 rsVerification = psVerificationBodega.executeQuery();
-                if(rsVerification.next()){
+                if (rsVerification.next()) {
                     objeto = new JsonObject();
                     response.getWriter().print(objeto);
                     System.out.println("No se puede insertar el punto de control " + idControl + " ya que existe una bodega enlazada");
-                }else {
+                } else {
                     String sqlConnection = "SELECT * FROM punto_control";
                     PreparedStatement psConnection = connection.prepareStatement(sqlConnection);
-                     psConnection.executeQuery();
+                    psConnection.executeQuery();
 
                     String sqlBodega = "INSERT INTO bodega (NoBodega, IDControl) VALUES (?, ?)";
                     PreparedStatement psBodega = connection.prepareStatement(sqlBodega);
@@ -145,16 +147,16 @@ public class controllerPuntoControl extends HttpServlet {
                     response.getWriter().print(objeto);
 
                 }
-            }else{
+            } else {
                 objeto = new JsonObject();
                 response.getWriter().print(objeto);
                 //response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
             }
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             //response.getWriter().print("Duplicate data " + ex);
             objeto = new JsonObject();
             response.getWriter().print(objeto);
-        }finally {
+        } finally {
             if (rsVerification != null) {
                 rsVerification.close();
             }
@@ -165,7 +167,7 @@ public class controllerPuntoControl extends HttpServlet {
     @SneakyThrows
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         doOptions(request, response);
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
         int IdControl = objeto.get("IdControl").getAsInt();
@@ -192,46 +194,46 @@ public class controllerPuntoControl extends HttpServlet {
     @SneakyThrows
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-            doOptions(request, response);
-            JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+            throws ServletException, IOException {
+        doOptions(request, response);
+        JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
 
-            int IdControl = objeto.get("IdControl").getAsInt();
-            String nombre = objeto.get("nombre").getAsString();
-            long cuiOperador = objeto.get("cuiOperador").getAsLong();
+        int IdControl = objeto.get("IdControl").getAsInt();
+        String nombre = objeto.get("nombre").getAsString();
+        long cuiOperador = objeto.get("cuiOperador").getAsLong();
 
-            try{
-                connection = data.conectar();
-                String sqlVerification = "SELECT * FROM operador WHERE cui_operador = ?";
-                PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
-                psVerification.setLong(1, cuiOperador);
-                ResultSet rsVerification = psVerification.executeQuery();
+        try {
+            connection = data.conectar();
+            String sqlVerification = "SELECT * FROM operador WHERE cui_operador = ?";
+            PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
+            psVerification.setLong(1, cuiOperador);
+            ResultSet rsVerification = psVerification.executeQuery();
 
-                if(rsVerification.next()){
-                    String sql = "UPDATE punto_control SET  nombreControl = ?, cui_operador = ? WHERE IdControl = ?";
-                    PreparedStatement ps = connection.prepareStatement(sql);
-                    ps.setString(1, nombre);
-                    ps.setLong(2, cuiOperador);
-                    ps.setInt(3, IdControl);
-                    ps.executeUpdate();
-                    //response.getWriter().print("SI se actualizo " + IdControl);
-                    objeto = new JsonObject();
-                    objeto.addProperty("IdControl", IdControl);
-                    response.getWriter().print(objeto);
+            if (rsVerification.next()) {
+                String sql = "UPDATE punto_control SET  nombreControl = ?, cui_operador = ? WHERE IdControl = ?";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1, nombre);
+                ps.setLong(2, cuiOperador);
+                ps.setInt(3, IdControl);
+                ps.executeUpdate();
+                //response.getWriter().print("SI se actualizo " + IdControl);
+                objeto = new JsonObject();
+                objeto.addProperty("IdControl", IdControl);
+                response.getWriter().print(objeto);
 
-                }else{
-                    objeto = new JsonObject();
-                    response.getWriter().print(objeto);
-                   // response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
-                }
-            } catch(SQLException ex){
+            } else {
                 objeto = new JsonObject();
                 response.getWriter().print(objeto);
-                //response.getWriter().print("Error al actualizar " + ex);
-            } finally {
-                data.desconectar();
+                // response.getWriter().print("No existe el operador en la base de datos " + cuiOperador);
             }
+        } catch (SQLException ex) {
+            objeto = new JsonObject();
+            response.getWriter().print(objeto);
+            //response.getWriter().print("Error al actualizar " + ex);
+        } finally {
+            data.desconectar();
         }
+    }
 
     @Override
     public String getServletInfo() {

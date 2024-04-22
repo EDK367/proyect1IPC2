@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import models.cliente;
 
-import javax.json.Json;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 
 @WebServlet("/api/cliente")
 public class controllerCliente extends HttpServlet {
-
 
 
     conexionData data = new conexionData();
@@ -122,141 +120,139 @@ public class controllerCliente extends HttpServlet {
             psVerification.setInt(1, nit);
             rsVerification = psVerification.executeQuery();
 
-            if(rsVerification.next()){
+            if (rsVerification.next()) {
                 response.getWriter().print("Error, el cliente ya existe en la base de datos");
 
-            }else{
+            } else {
                 String sqlrecepcionista = "SELECT * FROM recepcionista WHERE cui_operador = ? AND cui_recepcionista = ?";
-                PreparedStatement psOperador = connection.prepareStatement(sqlrecepcionista );
+                PreparedStatement psOperador = connection.prepareStatement(sqlrecepcionista);
                 psOperador.setLong(1, cuiOperador);
                 psOperador.setLong(2, cuiRecepcionista);
                 ResultSet rsOperador = psOperador.executeQuery();
 
 
-
-                    if( rsOperador.next()){
-                        String sql = "INSERT INTO cliente (nit, nombre, apellido, telefono, cui_operador, cui_recepcionista) VALUES (?, ?, ?, ?, ?, ?)";
-                        PreparedStatement ps = connection.prepareStatement(sql);
-                        ps.setInt(1, nit);
-                        ps.setString(2, nombre);
-                        ps.setString(3, apellido);
-                        ps.setInt(4, telefono);
-                        ps.setLong(5, cuiOperador);
-                        ps.setLong(6, cuiRecepcionista);
-                        ps.executeUpdate();
-                        response.getWriter().print("Cliente creado exitosamente");
-
+                if (rsOperador.next()) {
+                    String sql = "INSERT INTO cliente (nit, nombre, apellido, telefono, cui_operador, cui_recepcionista) VALUES (?, ?, ?, ?, ?, ?)";
+                    PreparedStatement ps = connection.prepareStatement(sql);
+                    ps.setInt(1, nit);
+                    ps.setString(2, nombre);
+                    ps.setString(3, apellido);
+                    ps.setInt(4, telefono);
+                    ps.setLong(5, cuiOperador);
+                    ps.setLong(6, cuiRecepcionista);
+                    ps.executeUpdate();
+                    response.getWriter().print("Cliente creado exitosamente");
 
 
-                }else{
+                } else {
                     response.getWriter().print("Error, el operador o recepcionista no existe en la base de datos");
                 }
             }
 
         } catch (SQLException ex) {
             response.getWriter().print("Error en la creacion, puede que el recepcionista no trabaje con ese operador " + ex);
-    } finally{
-        if (rsVerification != null) {
-            rsVerification.close();
-        }
-        data.desconectar();
-    }
-}
-
-@SneakyThrows
-@Override
-
-protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-            doOptions(request, response);
-            JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
-            int nit = objeto.get("NIT").getAsInt();
-            try {
-                connection = data.conectar();
-                String sql = "DELETE FROM cliente WHERE nit = ?";
-                PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setInt(1, nit);
-                ps.executeUpdate();
-                response.getWriter().print("SI se elimino");
-            } catch (SQLException ex) {
-                response.getWriter().print("Error en la eliminacion, probablemente no existe el cliente en la base de datos");
-            } finally {
-                data.desconectar();
+        } finally {
+            if (rsVerification != null) {
+                rsVerification.close();
             }
+            data.desconectar();
         }
+    }
 
-@SneakyThrows
-@Override
+    @SneakyThrows
+    @Override
+
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doOptions(request, response);
+        JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+        int nit = objeto.get("NIT").getAsInt();
+        try {
+            connection = data.conectar();
+            String sql = "DELETE FROM cliente WHERE nit = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, nit);
+            ps.executeUpdate();
+            response.getWriter().print("SI se elimino");
+        } catch (SQLException ex) {
+            response.getWriter().print("Error en la eliminacion, probablemente no existe el cliente en la base de datos");
+        } finally {
+            data.desconectar();
+        }
+    }
+
+    @SneakyThrows
+    @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    doOptions(request, response);
-    JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
-    int nit = objeto.get("NIT").getAsInt();
-    String nombre = objeto.get("nombre").getAsString();
-    String apellido = objeto.get("apellido").getAsString();
-    int telefono = objeto.get("telefono").getAsInt();
-    long cuiOperador = objeto.get("cuiOperador").getAsLong();
-    long cuiRecepcionista = objeto.get("cuiRecepcionista").getAsLong();
+        doOptions(request, response);
+        JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+        int nit = objeto.get("NIT").getAsInt();
+        String nombre = objeto.get("nombre").getAsString();
+        String apellido = objeto.get("apellido").getAsString();
+        int telefono = objeto.get("telefono").getAsInt();
+        long cuiOperador = objeto.get("cuiOperador").getAsLong();
+        long cuiRecepcionista = objeto.get("cuiRecepcionista").getAsLong();
 
-    cliente newCliente = new cliente();
-    newCliente.setNIT(nit);
-    newCliente.setNombre(nombre);
-    newCliente.setApellido(apellido);
-    newCliente.setTelefono(telefono);
-    newCliente.setCuiOperador(cuiOperador);
-    newCliente.setCuiRecepcionista(cuiRecepcionista);
+        cliente newCliente = new cliente();
+        newCliente.setNIT(nit);
+        newCliente.setNombre(nombre);
+        newCliente.setApellido(apellido);
+        newCliente.setTelefono(telefono);
+        newCliente.setCuiOperador(cuiOperador);
+        newCliente.setCuiRecepcionista(cuiRecepcionista);
 
-    ResultSet rsVerification = null;
-    try {
-        connection = data.conectar();
-       String sqlVerification = "SELECT * FROM cliente WHERE nit = ?";
-        PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
-        psVerification.setInt(1, nit);
-        rsVerification = psVerification.executeQuery();
+        ResultSet rsVerification = null;
+        try {
+            connection = data.conectar();
+            String sqlVerification = "SELECT * FROM cliente WHERE nit = ?";
+            PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
+            psVerification.setInt(1, nit);
+            rsVerification = psVerification.executeQuery();
 
-        if(rsVerification.next()){
-            String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ?";
-            PreparedStatement psOperador = connection.prepareStatement(sqlOperador);
-            psOperador.setLong(1, cuiOperador);
-            rsVerification = psOperador.executeQuery();
+            if (rsVerification.next()) {
+                String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ?";
+                PreparedStatement psOperador = connection.prepareStatement(sqlOperador);
+                psOperador.setLong(1, cuiOperador);
+                rsVerification = psOperador.executeQuery();
 
-            if(rsVerification.next()){
-                String sqlRecepcionista = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
-                PreparedStatement psRecepcionista = connection.prepareStatement(sqlRecepcionista);
-                psRecepcionista.setLong(1, cuiRecepcionista);
-                rsVerification = psRecepcionista.executeQuery();
+                if (rsVerification.next()) {
+                    String sqlRecepcionista = "SELECT * FROM recepcionista WHERE cui_recepcionista = ?";
+                    PreparedStatement psRecepcionista = connection.prepareStatement(sqlRecepcionista);
+                    psRecepcionista.setLong(1, cuiRecepcionista);
+                    rsVerification = psRecepcionista.executeQuery();
 
-                if(rsVerification.next()) {
-                    String sql = "UPDATE cliente SET  nombre = ?, apellido = ?, telefono = ?, cui_operador = ?, cui_recepcionista = ? WHERE nit = ?";
-                    PreparedStatement ps = connection.prepareStatement(sql);
-                    ps.setString(1, nombre);
-                    ps.setString(2, apellido);  
-                    ps.setInt(3, telefono);
-                    ps.setLong(4, cuiOperador);
-                    ps.setLong(5, cuiRecepcionista);
-                    ps.setInt(6, nit);
-                    ps.executeUpdate();
-                    response.getWriter().print("Cliente actualizado exitosamente");
-                }else{
-                    response.getWriter().print("Error, el recepcionista no existe en la base de datos");
+                    if (rsVerification.next()) {
+                        String sql = "UPDATE cliente SET  nombre = ?, apellido = ?, telefono = ?, cui_operador = ?, cui_recepcionista = ? WHERE nit = ?";
+                        PreparedStatement ps = connection.prepareStatement(sql);
+                        ps.setString(1, nombre);
+                        ps.setString(2, apellido);
+                        ps.setInt(3, telefono);
+                        ps.setLong(4, cuiOperador);
+                        ps.setLong(5, cuiRecepcionista);
+                        ps.setInt(6, nit);
+                        ps.executeUpdate();
+                        response.getWriter().print("Cliente actualizado exitosamente");
+                    } else {
+                        response.getWriter().print("Error, el recepcionista no existe en la base de datos");
+                    }
+
+                } else {
+                    response.getWriter().print("Error, el operador no existe en la base de datos");
                 }
-
-            }else {
-                response.getWriter().print("Error, el operador no existe en la base de datos");
+            } else {
+                response.getWriter().print("Error, el cliente no existe en la base de datos");
             }
-        }else{
-            response.getWriter().print("Error, el cliente no existe en la base de datos");
-        }
 
-    } catch(SQLException | ClassNotFoundException ex) {
-        response.getWriter().print("Error en la actualizacion, posiblemente hay un dato duplicado" +ex);
-    }finally{
-        if (rsVerification != null) {
-            rsVerification.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            response.getWriter().print("Error en la actualizacion, posiblemente hay un dato duplicado" + ex);
+        } finally {
+            if (rsVerification != null) {
+                rsVerification.close();
+            }
+            data.desconectar();
         }
-        data.desconectar();
     }
-}
 
     @Override
     public String getServletInfo() {

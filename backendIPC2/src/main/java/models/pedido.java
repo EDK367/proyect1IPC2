@@ -15,7 +15,7 @@ public class pedido {
 
     @Getter
     @Setter
-    private char estado;
+    private String estado;
 
     @Getter
     @Setter
@@ -25,7 +25,7 @@ public class pedido {
     @Setter
     private int rutaTomada;
 
-    public pedido(int noPedido, int bodegaActual, char estado, int destinoController, int rutaTomada) {
+    public pedido(int noPedido, int bodegaActual, String estado, int destinoController, int rutaTomada) {
         this.noPedido = noPedido;
         this.bodegaActual = bodegaActual;
         this.estado = estado;

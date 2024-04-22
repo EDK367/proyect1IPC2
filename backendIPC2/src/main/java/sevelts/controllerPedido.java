@@ -58,7 +58,37 @@ public class controllerPedido extends HttpServlet {
             throws ServletException, IOException {
         doOptions(request, response);
         String op = (request.getParameter("op") != null) ? request.getParameter("op") : "list";
-        
+
+        if (op.equals("list")) {
+            ArrayList<pedido> listPedidos = new ArrayList<>();
+            try {
+                conexionData data = new conexionData();
+                Connection connection = data.conectar();
+                String sql = "select * from pedido";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    pedido pedido = new pedido();
+                    pedido.setNoPedido(rs.getInt("NoPedido"));
+                    pedido.setBodegaActual(rs.getInt("BodegaActual"));
+                    pedido.setEstado(String.valueOf(rs.getString("Estado").charAt(0)));
+                    pedido.setDestinoController(rs.getInt("DestinoController"));
+                    pedido.setRutaTomada(rs.getInt("RutaTomada"));
+                    listPedidos.add(pedido);
+                }
+                String json = gson.toJson(listPedidos);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                PrintWriter out = response.getWriter();
+                out.print(json);
+                out.flush();
+            } catch (SQLException e) {
+                response.getWriter().print("Error en la lectura" + e);
+                System.out.println("Error en la lectura");
+            } finally {
+                data.desconectar();
+            }
+        }
 
     }
 
@@ -66,9 +96,31 @@ public class controllerPedido extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            doOptions(request, response);
+        doOptions(request, response);
+        JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
+        int bodegaActual = jsonObject.get("bodegaActual").getAsInt();
+        int destinoController = jsonObject.get("destinoController").getAsInt();
 
-
+        pedido newPedido = new pedido();
+        newPedido.setBodegaActual(bodegaActual);
+        newPedido.setDestinoController(destinoController);
+        ResultSet rsVerification = null;
+        try {
+            connection = data.conectar();
+            String sql = "INSERT INTO pedido (BodegaActual, DestinoController) VALUES (?,?)";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, newPedido.getBodegaActual());
+            ps.setInt(2, newPedido.getDestinoController());
+            ps.executeUpdate();
+            response.getWriter().print("pedido registrado" + newPedido);
+        } catch (SQLException e) {
+            response.getWriter().print("Error al crear");
+        } finally {
+            if (rsVerification != null) {
+                rsVerification.close();
+            }
+            data.desconectar();
+        }
     }
 
     @SneakyThrows
@@ -82,7 +134,42 @@ public class controllerPedido extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.getWriter().print("Opcion invalida");
+        doOptions(request, response);
+        JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
+        int noPedido = jsonObject.get("noPedido").getAsInt();
+        int bodegaActual = jsonObject.get("bodegaActual").getAsInt();
+        String estado = jsonObject.get("estado").getAsString();
+        int destinoController = jsonObject.get("destinoController").getAsInt();
+        int rutaTomada = jsonObject.get("rutaTomada").getAsInt();
+        ResultSet rsVerification = null;
+        try {
+            connection = data.conectar();
+            String sqlVerification = "SELECT * FROM pedido WHERE NoPedido = ?";
+            PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
+            psVerification.setInt(1, noPedido);
+            rsVerification = psVerification.executeQuery();
+
+            if (rsVerification.next()) {
+                String sql = "UPDATE pedido SET bodegaActual = ?, estado = ?, destinoController = ?, rutaTomada = ? WHERE NoPedido = ?";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setInt(1, bodegaActual);
+                ps.setString(2, estado);
+                ps.setInt(3, destinoController);
+                ps.setInt(4, rutaTomada);
+                ps.setInt(5, noPedido);
+                ps.executeUpdate();
+                response.getWriter().print("pedido actualizado" + ps);
+            } else {
+                response.getWriter().print("pedido no existe");
+            }
+        } catch (SQLException e) {
+            response.getWriter().print("Error al actualizar");
+        } finally {
+            if (rsVerification != null) {
+                rsVerification.close();
+            }
+            data.desconectar();
+        }
     }
 
     @Override

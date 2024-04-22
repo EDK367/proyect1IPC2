@@ -28,6 +28,7 @@ public class controllerTarifaG extends HttpServlet {
     conexionData data = new conexionData();
     Connection connection = null;
     Gson gson = new Gson();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         response.setContentType("text/html;charset=UTF-8");
@@ -44,45 +45,45 @@ public class controllerTarifaG extends HttpServlet {
 
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
-                response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
-                response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization");
-            }
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization");
+    }
 
-            @SneakyThrows
-            @Override
-            protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @SneakyThrows
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                doOptions(request, response);
-                String op = (request.getParameter("op") != null) ? request.getParameter("op") : "list";
-                if (op.equals("list")) {
-                    ArrayList<tarifaGlobal> listTarifaGlobal = new ArrayList<>();
-                    connection = data.conectar();
-                    try {
-                        String sql = "select * from tarifaglobal";
-                        PreparedStatement ps = connection.prepareStatement(sql);
-                        ResultSet rs = ps.executeQuery();
-                        while (rs.next()) {
-                            tarifaGlobal global = new tarifaGlobal();
-                            global.setTarifaGlobalId(rs.getInt("IdTarifaGloblal"));
-                            global.setTarifaG(rs.getFloat("tarifaGlobal"));
-                            global.setFechaInicio(rs.getString("fechaCreacion"));
-                            global.setCuiAdmin(rs.getLong("cui_admin"));
-                            listTarifaGlobal.add(global);
-                        }
-                        String json = gson.toJson(listTarifaGlobal);
-                        response.setContentType("application/json");
-                        response.setCharacterEncoding("UTF-8");
-                        PrintWriter out = response.getWriter();
-                        out.print(json);
-                        out.flush();
-                    }catch(SQLException e){
-                        response.getWriter().print("Erro en la lectura" + e);
-                    }finally {
-                        data.desconectar();
-                    }
+        doOptions(request, response);
+        String op = (request.getParameter("op") != null) ? request.getParameter("op") : "list";
+        if (op.equals("list")) {
+            ArrayList<tarifaGlobal> listTarifaGlobal = new ArrayList<>();
+            connection = data.conectar();
+            try {
+                String sql = "select * from tarifaglobal";
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    tarifaGlobal global = new tarifaGlobal();
+                    global.setTarifaGlobalId(rs.getInt("IdTarifaGloblal"));
+                    global.setTarifaG(rs.getFloat("tarifaGlobal"));
+                    global.setFechaInicio(rs.getString("fechaCreacion"));
+                    global.setCuiAdmin(rs.getLong("cui_admin"));
+                    listTarifaGlobal.add(global);
                 }
+                String json = gson.toJson(listTarifaGlobal);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                PrintWriter out = response.getWriter();
+                out.print(json);
+                out.flush();
+            } catch (SQLException e) {
+                response.getWriter().print("Erro en la lectura" + e);
+            } finally {
+                data.desconectar();
             }
+        }
+    }
 
     @SneakyThrows
     @Override
@@ -126,25 +127,25 @@ public class controllerTarifaG extends HttpServlet {
     }
 
 
-protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    doOptions(request, response);
-    JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
-    int IdTarifaGloblal = objeto.get("tarifaGlobalId").getAsInt();
-    try {
-        connection = data.conectar();
-        String sql = "DELETE FROM tarifaglobal WHERE IdTarifaGloblal = ?";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, IdTarifaGloblal);
-        ps.executeUpdate();
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doOptions(request, response);
+        JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
+        int IdTarifaGloblal = objeto.get("tarifaGlobalId").getAsInt();
+        try {
+            connection = data.conectar();
+            String sql = "DELETE FROM tarifaglobal WHERE IdTarifaGloblal = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, IdTarifaGloblal);
+            ps.executeUpdate();
 
-        response.getWriter().print("Se ha eliminado el dato " + IdTarifaGloblal);
-    } catch (SQLException | ClassNotFoundException ex) {
-        response.getWriter().print("Error al eliminar " + ex);
-    } finally {
-        data.desconectar();
-    }
+            response.getWriter().print("Se ha eliminado el dato " + IdTarifaGloblal);
+        } catch (SQLException | ClassNotFoundException ex) {
+            response.getWriter().print("Error al eliminar " + ex);
+        } finally {
+            data.desconectar();
         }
+    }
 //    @SneakyThrows
 //    @Override
 //            protected void doPut(HttpServletRequest request, HttpServletResponse response)

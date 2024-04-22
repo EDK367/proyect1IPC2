@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import models.administrador;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -38,7 +40,7 @@ public class controllerPrincipal extends HttpServlet {
             out.println("</html>");
         }
     }
-    
+
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -46,24 +48,24 @@ public class controllerPrincipal extends HttpServlet {
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization");
     }
-    
+
     @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doOptions(request, response);
         String op = (request.getParameter("op") != null) ? request.getParameter("op") : "list";
-        
+
         if (op.equals("list")) {
             ArrayList<administrador> listAdmin = new ArrayList<>();
             conexionData data = new conexionData();
             Connection connection = data.conectar();
-            
+
             try {
                 String sql = "select * from administrador";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery();
-                
+
                 while (rs.next()) {
                     administrador admin = new administrador();
                     admin.setCuiAdmin(rs.getLong("cui_admin"));
@@ -77,7 +79,7 @@ public class controllerPrincipal extends HttpServlet {
                 // Convertir la lista a JSON
                 Gson gson = new Gson();
                 String json = gson.toJson(listAdmin);
-                
+
                 // Responde con el Json
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
@@ -124,7 +126,7 @@ public class controllerPrincipal extends HttpServlet {
 
             String sqlVerification = "SELECT * FROM administrador WHERE cui_admin = ? OR correo = ?";
             PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
-            psVerification.setLong(1,  cuiAdmin);
+            psVerification.setLong(1, cuiAdmin);
             psVerification.setString(2, correo);
             rsVerification = psVerification.executeQuery();
 
@@ -135,28 +137,28 @@ public class controllerPrincipal extends HttpServlet {
             } else {
                 String sqlOperador = "SELECT * FROM operador WHERE cui_operador = ? OR correo = ?";
                 PreparedStatement psOperador = connection.prepareStatement(sqlOperador);
-                psOperador.setLong(1,  cuiAdmin);
-                psOperador.setString(2,  correo);
+                psOperador.setLong(1, cuiAdmin);
+                psOperador.setString(2, correo);
                 rsVerification = psOperador.executeQuery();
 
-                if(rsVerification.next()){
-                   // response.getWriter().print("Este cui o correo ya existe en operador ");
+                if (rsVerification.next()) {
+                    // response.getWriter().print("Este cui o correo ya existe en operador ");
                     objeto = new JsonObject();
 
                     response.getWriter().print(objeto);
-                }else {
+                } else {
                     String sqlRecepcion = "SELECT * FROM recepcionista WHERE cui_recepcionista = ? OR correo = ?";
                     PreparedStatement psRece = connection.prepareStatement(sqlRecepcion);
-                    psRece.setLong(1,  cuiAdmin);
-                    psRece.setString(2,  correo);
+                    psRece.setLong(1, cuiAdmin);
+                    psRece.setString(2, correo);
                     rsVerification = psRece.executeQuery();
 
-                    if(rsVerification.next()){
-                       // response.getWriter().print("Este cui o correo ya existe en recepcionista ");
+                    if (rsVerification.next()) {
+                        // response.getWriter().print("Este cui o correo ya existe en recepcionista ");
                         objeto = new JsonObject();
                         response.getWriter().print(objeto);
 
-                    }else {
+                    } else {
                         String sql = "INSERT INTO administrador(cui_admin, nombre, apellido, correo, contraseña) VALUES (?,?,?,?,?)";
                         PreparedStatement ps = connection.prepareStatement(sql);
                         ps.setLong(1, newAdmin.getCuiAdmin());
@@ -169,22 +171,22 @@ public class controllerPrincipal extends HttpServlet {
                         objeto = new JsonObject();
                         objeto.addProperty("cuiAdmin", newAdmin.getCuiAdmin());
                         response.getWriter().print(objeto);
-                        
+
                     }
                 }
             }
         } catch (SQLException ex) {
-            response.getWriter().print("El cui o el correo esta duplicado" +ex);
+            response.getWriter().print("El cui o el correo esta duplicado" + ex);
         } catch (ClassNotFoundException ex) {
             response.getWriter().print("pura mamada del java");
         } finally {
-            if(rsVerification != null){
+            if (rsVerification != null) {
                 rsVerification.close();
             }
             data.desconectar();
         }
     }
-    
+
     @SneakyThrows
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
@@ -192,12 +194,12 @@ public class controllerPrincipal extends HttpServlet {
         doOptions(request, response);
         Gson gson = new Gson();
         JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
-        
+
         int cuiAdmin = objeto.get("cuiAdmin").getAsInt();
-        
+
         conexionData data = new conexionData();
         Connection connection = null;
-        
+
         try {
             connection = data.conectar();
             String sql = "DELETE FROM administrador WHERE cui_admin = ?";
@@ -212,9 +214,9 @@ public class controllerPrincipal extends HttpServlet {
         } finally {
             data.desconectar();
         }
-        
+
     }
-    
+
     @SneakyThrows
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
@@ -240,7 +242,7 @@ public class controllerPrincipal extends HttpServlet {
             psVerification.setLong(1, cuiAdmin);
             ResultSet rs = psVerification.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
                 String sql = "UPDATE administrador SET nombre = ?, apellido = ?, correo = ?, contraseña = ? WHERE cui_admin = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setString(1, nombre);
@@ -252,7 +254,7 @@ public class controllerPrincipal extends HttpServlet {
                 objeto = new JsonObject();
                 objeto.addProperty("cuiAdmin", cuiAdmin);
                 response.getWriter().print(objeto);
-            }else{
+            } else {
                 //response.getWriter().print("No existe el cui");
                 objeto = new JsonObject();
                 response.getWriter().print(objeto);
@@ -274,5 +276,5 @@ public class controllerPrincipal extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }
-    
+
 }
