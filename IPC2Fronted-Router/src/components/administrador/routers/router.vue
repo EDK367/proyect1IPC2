@@ -7,10 +7,13 @@
     <v-table
      height="400px" 
      fixed-header>
+      <div class="deletes">
+      <putDelete/>
+    </div>
       <thead> 
         <tr>
           <th class="text-left">ID Router</th>
-          <th class="text-left">Points</th>
+          <th class="text-left">Packages</th>
           <th class="text-left">Starting Points</th>
           <th class="text-left">Full Stop</th>
           <th class="text-left">Options</th>
@@ -56,6 +59,7 @@
 <script>
 import axios from "axios";
 import nuevoRouter from "./newRouter.vue";
+import putDelete from "./deleteAndPuteRouter";
 export default {
   
   data() {
@@ -68,6 +72,7 @@ export default {
 
   components: {
     nuevoRouter,
+    putDelete,
   },
 
   mounted() {

@@ -25,9 +25,9 @@
             </v-col>
              <v-col cols="12" md="4" sm="6">
               <v-text-field
-                v-model="Points"
+                v-model="packages"
                 :rules="[rules.required]"
-                label="Points*"
+                label="Total packages*"
                 type="number"
                 required
               ></v-text-field>
@@ -76,7 +76,7 @@
             variant="tonal"
             :disabled="
               !IdRuta ||
-              !Points ||
+              !packages ||
               !Start||
               !End
             "
@@ -124,7 +124,7 @@ export default {
     sheet: false,
     dialog: false,
     IdRuta: "",
-    Points: "",
+    packages: "",
     Start: "",
     End: "",
     rules: {
@@ -141,7 +141,7 @@ export default {
 
     clearTextFields() {
      this.IdRuta = "";
-     this.Points = "";
+     this.packages = "";
      this.Start = "";
      this.End = "";
       
@@ -155,7 +155,7 @@ export default {
     submitForm() {
       const createRouter = {
         idRuta: this.IdRuta,
-        cantidadPuntos: this.Points,
+        cantidadPuntos: this.packages,
         start: this.Start,
         end: this.End,
       };

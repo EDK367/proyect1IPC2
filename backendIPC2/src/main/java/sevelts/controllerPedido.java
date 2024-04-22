@@ -47,7 +47,7 @@ public class controllerPedido extends HttpServlet {
     }
 
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "XXXXXXXXXXXXXXXXXXXXX");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization");
     }
@@ -58,36 +58,8 @@ public class controllerPedido extends HttpServlet {
             throws ServletException, IOException {
         doOptions(request, response);
         String op = (request.getParameter("op") != null) ? request.getParameter("op") : "list";
+        
 
-        if (op.equals("list")) {
-            ArrayList<pedido> listPedido = new ArrayList<>();
-            conexionData data = new conexionData();
-            Connection connection = data.conectar();
-            try {
-                String sql = "select * from pedido";
-                PreparedStatement ps = connection.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    pedido pedido = new pedido();
-                    pedido.setNoBodega(rs.getInt("NoBodega"));
-                    pedido.setNoPedido(rs.getInt("NoPedido"));
-                    pedido.setCuiOperador(rs.getLong("cui_operador"));
-                    pedido.setEstado(rs.getString("estado").charAt(0));
-                    listPedido.add(pedido);
-
-                }
-                String json = gson.toJson(listPedido);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                PrintWriter out = response.getWriter();
-                out.print(json);
-                out.flush();
-            } catch (SQLException ex) {
-                response.getWriter().print("Error en la lectura");
-            } finally {
-                data.desconectar();
-            }
-        }
     }
 
     @SneakyThrows
@@ -96,52 +68,7 @@ public class controllerPedido extends HttpServlet {
             throws ServletException, IOException {
             doOptions(request, response);
 
-            JsonObject objeto = gson.fromJson(request.getReader(), JsonObject.class);
-            int noBodega = objeto.get("NoBodega").getAsInt();
-            long cuiOperador = objeto.get("cuiOperador").getAsLong();
-            char estado = objeto.get("estado").getAsCharacter();
 
-            pedido newPedido = new pedido();
-            newPedido.setNoBodega(noBodega);
-            newPedido.setCuiOperador(cuiOperador);
-            newPedido.setEstado(estado);
-
-            ResultSet rsVerification = null;
-
-            try {
-                connection = data.conectar();
-                String sqlVerification = "SELECT * FROM bodega WHERE NoBodega = ?";
-                PreparedStatement psVerification = connection.prepareStatement(sqlVerification);
-                psVerification.setInt(1, noBodega);
-                rsVerification = psVerification.executeQuery();
-                if(rsVerification.next()){
-                    String psOperador = "SELECT * FROM operador WHERE cui_operador = ?";
-                    PreparedStatement psOp = connection.prepareStatement(psOperador);
-                    psOp.setLong(1, cuiOperador);
-                    rsVerification = psVerification.executeQuery();
-                    if(rsVerification.next()) {
-
-                        String sql = "INSERT INTO pedido (NoBodega, cui_operador, estado) VALUES (?, ?, ?)";
-                        PreparedStatement ps = connection.prepareStatement(sql);
-                        ps.setInt(1, noBodega);
-                        ps.setLong(2, cuiOperador);
-                        ps.setCharacterStream(3, new StringReader(String.valueOf(estado)));
-                        ps.executeUpdate();
-                        response.getWriter().print("Pedido creado exitosamente");
-                    }else{
-                        response.getWriter().print("El operador no existe");
-                    }
-                }else{
-                    response.getWriter().print("La bodega no existe");
-                }
-            }catch (SQLException ex) {
-                response.getWriter().print("Error en la escritura");
-            }finally {
-                if (rsVerification != null) {
-                    rsVerification.close();
-                }
-                data.desconectar();
-            }
     }
 
     @SneakyThrows

@@ -7,28 +7,33 @@ public class pedido {
 
     @Getter
     @Setter
-    private int NoPedido;
+    private int noPedido;
 
     @Getter
     @Setter
-    private int NoBodega;
-
-    @Getter
-    @Setter
-    private long cuiOperador;
+    private int bodegaActual;
 
     @Getter
     @Setter
     private char estado;
 
-    public pedido(int NoPedido, int NoBodega, long cuiOperador, char estado) {
-        this.NoPedido = NoPedido;
-        this.NoBodega = NoBodega;
-        this.cuiOperador = cuiOperador;
+    @Getter
+    @Setter
+    private int destinoController;
+
+    @Getter
+    @Setter
+    private int rutaTomada;
+
+    public pedido(int noPedido, int bodegaActual, char estado, int destinoController, int rutaTomada) {
+        this.noPedido = noPedido;
+        this.bodegaActual = bodegaActual;
         this.estado = estado;
+        this.destinoController = destinoController;
+        this.rutaTomada = rutaTomada;
     }
 
-    public pedido() {
+    public pedido(){
 
     }
 }
