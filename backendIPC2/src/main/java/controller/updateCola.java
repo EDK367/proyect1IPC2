@@ -46,4 +46,23 @@ public class updateCola {
             data.desconectar();
         }
     }
-}
+
+    public void actualizarRuta(HttpServletResponse response, int idRuta, int idControl, int NoPedido, int posicion)
+            throws SQLException, IOException {
+       // response.getWriter().println("NoPedido: " + NoPedido + " - Ruta tomada: " + idRuta + " - Estara en la bodega: " + idControl
+         //       + " - Posicion: " + posicion);
+        try {
+            connection = data.conectar();
+            String sql = "UPDATE pedido SET BodegaActual = ? WHERE NoPedido = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idControl);
+            ps.setInt(2, NoPedido);
+            ps.executeUpdate();
+            response.getWriter().println  ("Pedido actualizado");
+        } catch (SQLException | ClassNotFoundException e) {
+            response.getWriter().print("Error de lectura " + e);
+        } finally {
+            data.desconectar();
+        }
+    }
+}//fin de la clase updateCola

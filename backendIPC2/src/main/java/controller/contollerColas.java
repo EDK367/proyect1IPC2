@@ -20,7 +20,8 @@ import java.sql.SQLException;
 
 @WebServlet("/api/colas")
 public class contollerColas extends HttpServlet {
-
+    updateCola update = new updateCola();
+    controllerDesactivete desactivar = new controllerDesactivete();
     //llamados importantes
     conexionData data = new conexionData();
     Connection connection = null;
@@ -96,13 +97,30 @@ public class contollerColas extends HttpServlet {
 
 
                     } else if (flag.equals("R")) {
+                        int total = 0;
+                        String sqlDesactivete = "SELECT COUNT(*) AS total FROM pedido WHERE BodegaActual = ? AND estado = ?";
+                        PreparedStatement psDesactivete = connection.prepareStatement(sqlDesactivete);
+                        psDesactivete.setInt(1, bodegaOperador);
+                        psDesactivete.setString(2, flag);
+                        ResultSet rsDesactivete = psDesactivete.executeQuery();
+                        if(rsDesactivete.next()) {
+                            total = rsDesactivete.getInt(1);
+                        }
+                        int contador = 0;
+                        boolean desactivete = false;
                         while (rsVerification.next()) {
-                            response.getWriter().println("Ruta");
+                            desactivete = true;
                             int NoPedido = rsVerification.getInt("NoPedido");
                             int rutaTomada = rsVerification.getInt("RutaTomada");
                             int destino = rsVerification.getInt("DestinoController");
                             updateTraslado(response, NoPedido, rutaTomada, bodegaOperador, destino);
+                            contador++;
+                            desactivar.desactiveteController(response, rutaTomada, bodegaOperador, flag, contador, total, NoPedido);
+
                         }
+                        //este if decide cuando ya todos los paquetes se movieron
+
+
                     }
 
                 } else {
@@ -170,7 +188,7 @@ public class contollerColas extends HttpServlet {
         ResultSet rsEntregado = null;
         try {
             connection = data.conectar();
-            response.getWriter().println("NoPedido: " + NoPedido + " - Ruta tomada: " + rutaTomada + " - Esta en la bodega: " + bodegaOperador);
+            //response.getWriter().println("NoPedido: " + NoPedido + " - Ruta tomada: " + rutaTomada + " - Esta en la bodega: " + bodegaOperador);
             String sqlEntregado = "SELECT * FROM pedido WHERE NoPedido = ? AND DestinoController = ?";
             PreparedStatement psEntregado = connection.prepareStatement(sqlEntregado);
             psEntregado.setInt(1, NoPedido);
@@ -203,10 +221,40 @@ public class contollerColas extends HttpServlet {
                     ps.executeUpdate();
                     response.getWriter().println("Pedido entregado");
                 } else {
-
+                    response.getWriter().println("Pedido no encontrado");
                 }
             } else {
-                response.getWriter().println("No entregado el pedido");
+                //aca esta para poder hacer lo del traslado
+                String sqlRouter = "SELECT * FROM pedido WHERE NoPedido = ?";
+                PreparedStatement psRouter = connection.prepareStatement(sqlRouter);
+                psRouter.setInt(1, NoPedido);
+                rsEntregado = psRouter.executeQuery();
+                if (rsEntregado.next()) {
+                    int ruta = rsEntregado.getInt("RutaTomada");
+                    int pos = 1;
+                    response.getWriter().println("el pedido " + NoPedido + " se encuentra en la ruta " + ruta);
+                    while(pos != 0) {
+                        boolean activete = true;
+                        String sqlRutaController = "SELECT * FROM trayecto WHERE IDRuta = ? and posicion = ? and activete = ?";
+                        PreparedStatement psRutaController = connection.prepareStatement(sqlRutaController);
+                        psRutaController.setInt(1, ruta);
+                        psRutaController.setInt(2, pos);
+                        psRutaController.setBoolean(3, activete);
+                        ResultSet rsRutaController = psRutaController.executeQuery();
+                        if(rsRutaController.next()){
+                            int posicion = rsRutaController.getInt("posicion");
+                            int idControl = rsRutaController.getInt("IDControl");
+                            response.getWriter().println("La posicion " + posicion + " esta activo en el control " + idControl);
+                            update.actualizarRuta(response, ruta, idControl, NoPedido, posicion);
+                            pos = 0;
+                        }else{
+                            //response.getWriter().println("La posicion " + pos + " no esta activa");
+                            pos++;
+                        }
+                    }
+                }else{
+                    response.getWriter().println("No se encontro el pedido");
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             response.getWriter().print("Error de lectura " + e);
