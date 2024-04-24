@@ -113,13 +113,11 @@ export default {
     },
     deleteItemConfirm(router){
       this.dialogDelete = false;
-       const routerJson = JSON.stringify(this.deleteOption);
-      console.log("Este es el JSON del administrador:", routerJson);
+      const idRuta = this.deleteOption.idRuta;
+      console.log("Este es el que se elimina:", idRuta);
 
       axios
-        .delete("http://localhost:8080/backendIPC2/api/router", {
-          data: routerJson,
-        })
+        .delete(`http://localhost:8080/backendIPC2/api/router?idRuta=${idRuta}`)
         .then((response) => {
           console.log("Administrador eliminado con éxito");
           this.obtenerRutas();

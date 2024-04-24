@@ -192,7 +192,7 @@ public class controllerRutas extends HttpServlet {
                 psTrayecto.setInt(1, idRuta);
                 rsVerification = psTrayecto.executeQuery();
                 if(rsVerification.next()){
-                    String sqlTrayectoActivate = "SELECT * FROM trayecto WHERE idRuta = ? AND activate = 1";
+                    String sqlTrayectoActivate = "SELECT * FROM trayecto WHERE idRuta = ? AND activete = 1";
                     PreparedStatement psTrayectoActivate = connection.prepareStatement(sqlTrayectoActivate);
                     psTrayectoActivate.setInt(1, idRuta);
                     rsVerification = psTrayectoActivate.executeQuery();

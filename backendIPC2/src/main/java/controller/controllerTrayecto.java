@@ -69,7 +69,7 @@ public class controllerTrayecto extends HttpServlet {
                     trayecto.setIdRuta(rs.getInt("IDRuta"));
                     trayecto.setIdControl(rs.getInt("IDControl"));
                     trayecto.setPosicion(rs.getInt("posicion"));
-                    trayecto.setActivete(rs.getBoolean("activate"));
+                    trayecto.setActivete(rs.getBoolean("activete"));
                     listTrayectos.add(trayecto);
                 }
                 String json = gson.toJson(listTrayectos);
@@ -117,14 +117,14 @@ public class controllerTrayecto extends HttpServlet {
                 psControllerActivate.setInt(2, idControl);
                 rsVerification = psControllerActivate.executeQuery();
                 if (rsVerification.next()) {
-                    response.getWriter().print(idControl + " el control ya existe en esta ruta " + idRuta);
+                   // response.getWriter().print(idControl + " el control ya existe en esta ruta " + idRuta);
                 } else {
                     String sqlController = "SELECT * FROM punto_control WHERE IDControl = ?";
                     PreparedStatement psController = connection.prepareStatement(sqlController);
                     psController.setInt(1, idControl);
                     rsVerification = psController.executeQuery();
                     if (!rsVerification.next()) {
-                        response.getWriter().print(idControl + " no existe en punto de control");
+                        //response.getWriter().print(idControl + " no existe en punto de control");
                     } else {
                         String sqlPosicion = "SELECT * FROM trayecto WHERE IDRuta = ? AND posicion = ?";
                         PreparedStatement psPosicion = connection.prepareStatement(sqlPosicion);
@@ -132,9 +132,9 @@ public class controllerTrayecto extends HttpServlet {
                         psPosicion.setInt(2, posicion);
                         rsVerification = psPosicion.executeQuery();
                         if (rsVerification.next()) {
-                            response.getWriter().print(posicion + " posicion ya existente en esta ruta " + idRuta + " asignado al control " + idControl);
+                            //response.getWriter().print(posicion + " posicion ya existente en esta ruta " + idRuta + " asignado al control " + idControl);
                         } else {
-                            String sql = "INSERT INTO trayecto (IDRuta, IDControl, posicion, activate) VALUES (?,?,?,?)";
+                            String sql = "INSERT INTO trayecto (IDRuta, IDControl, posicion, activete) VALUES (?,?,?,?)";
                             PreparedStatement ps = connection.prepareStatement(sql);
                             ps.setInt(1, idRuta);
                             ps.setInt(2, idControl);
@@ -146,7 +146,7 @@ public class controllerTrayecto extends HttpServlet {
                     }
                 }
             } else {
-                response.getWriter().print(idRuta + " no existe esa ruta");
+               // response.getWriter().print(idRuta + " no existe esa ruta");
             }
         } catch (SQLException | ClassNotFoundException e) {
             response.getWriter().print("Error de lectura " + e);
@@ -197,7 +197,7 @@ public class controllerTrayecto extends HttpServlet {
                 if(rsVerification.next()){
                     response.getWriter().print(posicion + " posicion ya existente en esta ruta " + idRuta + " asignado al control " + idControl);
                 }else{
-                    String sql = "UPDATE trayecto SET posicion = ?, activate = ? WHERE IDRuta = ? AND IDControl = ?";
+                    String sql = "UPDATE trayecto SET posicion = ?, activete = ? WHERE IDRuta = ? AND IDControl = ?";
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setInt(1, posicion);
                     ps.setBoolean(2, activete);
@@ -230,7 +230,7 @@ public class controllerTrayecto extends HttpServlet {
             psVerification.setInt(2, idControl);
             rsVerification = psVerification.executeQuery();
             if(rsVerification.next()){
-                String sql = "UPDATE trayecto SET activate = ? WHERE IDRuta = ? AND IDControl = ?";
+                String sql = "UPDATE trayecto SET activete = ? WHERE IDRuta = ? AND IDControl = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setBoolean(1, activete);
                 ps.setInt(2, idRuta);

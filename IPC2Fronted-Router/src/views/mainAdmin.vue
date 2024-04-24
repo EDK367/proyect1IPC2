@@ -49,8 +49,8 @@
           <v-list-item
             prepend-icon="mdi-boom-gate-alert"
             title="Info Router"
-            value="routersInfo"
-            @click="changeComponent('tableRouterInfo')"
+            value="tablesTrayecto"
+            @click="changeComponent('tablesTrayecto')"
           ></v-list-item>
 
           <v-list-item
@@ -85,6 +85,7 @@ import tablesOp from "../components/administrador/operator.vue";
 import tablesRe from "../components/administrador/recepcion.vue";
 import tablesPoint from "../components/administrador/points/points.vue";
 import tablesRouter from "../components/administrador/routers/router.vue";
+import tablesTrayecto from "../components/administrador/routerInfo/routerInfo.vue"
 import tarifaGlobal from "../components/administrador/tarifas/global.vue";
 import tarifaLocal from "../components/administrador/tarifas/local.vue";
 export default {
@@ -115,7 +116,8 @@ export default {
         this.use = tarifaLocal;
       }else if(componentName === "tableRouter"){
         this.use = tablesRouter;
-        
+      }else if(componentName === "tablesTrayecto"){
+        this.use = tablesTrayecto
       }
     },
   },
@@ -126,6 +128,7 @@ export default {
     tablesRe,
     tablesPoint,
     tablesRouter,
+    tablesTrayecto,
     profiles,
     tarifaGlobal,
     tarifaLocal,
