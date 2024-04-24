@@ -195,7 +195,6 @@ public class contollerColas extends HttpServlet {
                         psUpdate.setInt(2, rutaTomada);
                         psUpdate.executeUpdate();
                     }
-
                     char estado = 'E';
                     String sql = "UPDATE pedido SET estado = ? WHERE NoPedido = ?";
                     PreparedStatement ps = connection.prepareStatement(sql);
@@ -204,7 +203,7 @@ public class contollerColas extends HttpServlet {
                     ps.executeUpdate();
                     response.getWriter().println("Pedido entregado");
                 } else {
-                    response.getWriter().println("Pedido no encontrado");
+
                 }
             } else {
                 response.getWriter().println("No entregado el pedido");
