@@ -142,6 +142,7 @@ public class login extends HttpServlet {
                 return true;
             } else {
                 System.out.println("hubo un fallo en la validacion");
+                return false;
             }
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("Error en la validacion admin");
@@ -178,16 +179,18 @@ public class login extends HttpServlet {
     private boolean validarRecepcionista(long identificador, String password) {
         try {
             connection = data.conectar();
+            System.out.println(identificador + "y la pass " + password);
             String sql = "SELECT 1 FROM recepcionista WHERE cui_recepcionista = ? AND contraseña = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setLong(1, identificador);
             ps.setString(2, password);
             rs = ps.executeQuery();
             if (rs.next()) {
-                System.out.println("Si valido el recepcionista");
+                System.out.println("Si valido el rece");
                 return true;
             } else {
-                System.out.println("hubo un fallo");
+                System.out.println("hubo varios fallos");
+                return false;
             }
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("Error en la validacion recepcionista");

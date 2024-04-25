@@ -49,6 +49,7 @@ public class controllerPaquete extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
     }
 
     @Override
@@ -209,4 +210,23 @@ public class controllerPaquete extends HttpServlet {
         }
 
     }//fin del post
+
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doOptions(request, response);
+        int idPaquete = Integer.parseInt(request.getParameter("paquete"));
+        try {
+            connection = data.conectar();
+            String sql = "DELETE FROM paquetes WHERE paquete = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idPaquete);
+            ps.executeUpdate();
+            response.getWriter().println("Paquete eliminado correctamente");
+        } catch (SQLException | ClassNotFoundException e) {
+            response.getWriter().println("Error al eliminar el paquete " + e);
+        } finally {
+            data.desconectar();
+        }
+    }
+
 }//fin de la clase

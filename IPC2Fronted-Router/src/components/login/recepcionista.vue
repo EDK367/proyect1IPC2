@@ -88,6 +88,9 @@
 import axios from 'axios'
 //importar el router
 import router from '@/router'
+//importar el store
+import store from '@/store';
+
 export default {
   data: () => ({
     sheet: false,
@@ -115,8 +118,12 @@ export default {
         .post("http://localhost:8080/backendIPC2/api/login", dataLogin)
         .then((response) => {
           console.log(response.data)
+          
           if(response.data.hasOwnProperty('cuiRecepcionista')){
-           router.push('/recepcion')
+           
+            store.commit('toggleFixedComponent', false);
+            store.dispatch('saveLoginData', response.data);
+            router.push('/recepcion')
           }else{
             this.sheet = true;
           }

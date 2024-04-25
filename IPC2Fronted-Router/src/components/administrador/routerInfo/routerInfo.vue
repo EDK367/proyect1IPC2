@@ -31,7 +31,8 @@
             <td>{{ trayecto.posicion }}</td>
             <td><v-icon :color="trayecto.activete ? 'green' : 'red'">
                 {{ trayecto.activete ? 'mdi-flag-checkered' : 'mdi-flag-remove' }}
-              </v-icon></td>
+              </v-icon>
+              </td>
             <td>
               <v-btn @click="option(trayecto)" prepend-icon="$vuetify" variant="text"> SELECT </v-btn>
               <v-icon size="small" @click="deleteItem(trayecto)">mdi-delete</v-icon>
@@ -111,12 +112,11 @@ export default {
     },
     deleteItemConfirm(trayecto) {
       this.dialogDelete = false;
-      const trayectoJson = JSON.stringify(this.deleteOption);
-      console.log("Este es el JSON del administrador:", trayectoJson);
+      
+     const idRuta = this.deleteOption.idRuta;
+     const idControl = this.deleteOption.idControl;
       axios
-        .delete("http://localhost:8080/backendIPC2/api/trayecto", {
-          data: trayectoJson,
-        })
+         .delete(`http://localhost:8080/backendIPC2/api/trayecto?idRuta=${idRuta}&idControl=${idControl}`)
         .then((response) => {
           console.log("Administrador eliminado con éxito");
           this.obtenerTrayecto();
