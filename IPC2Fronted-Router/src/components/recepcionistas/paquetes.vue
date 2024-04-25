@@ -3,12 +3,14 @@
     <h1>Table of Packages</h1>
 
     <div class="table_Container">
-    <div class="new">
-        <nuevoPedido/>
+      <div class="new">
+        <nuevoPedido />
+      </div>
+      <div class="new2">
+        <nuevoPaquete />
       </div>
       <v-table height="400px" fixed-header>
         <thead>
-
           <tr>
             <th class="text-left">Package</th>
             <th class="text-left">Operator</th>
@@ -34,7 +36,11 @@
             <td>{{ paquete.peso }}</td>
             <td>
               <v-icon :color="paquete.tarifaGlobal ? 'green' : 'red'">
-                {{ paquete.tarifaGlobal ? 'mdi-flag-checkered' : 'mdi-flag-remove' }}
+                {{
+                  paquete.tarifaGlobal
+                    ? "mdi-flag-checkered"
+                    : "mdi-flag-remove"
+                }}
               </v-icon>
             </td>
             <td>{{ paquete.total }}</td>
@@ -73,7 +79,8 @@
 
 <script>
 import axios from "axios";
-import nuevoPedido from "./nuevoPedido.vue"
+import nuevoPedido from "./nuevoPedido.vue";
+import nuevoPaquete from "./nuevoPaquete.vue";
 export default {
   data() {
     return {
@@ -83,7 +90,8 @@ export default {
     };
   },
   components: {
-   nuevoPedido
+    nuevoPedido,
+    nuevoPaquete,
   },
   mounted() {
     this.obtenerPaquetes();
@@ -118,7 +126,7 @@ export default {
     },
     deleteItemConfirm(paquete) {
       this.dialogDelete = false;
-        const pack = this.deleteOption.paquete;
+      const pack = this.deleteOption.paquete;
       axios
         .delete(
           `http://localhost:8080/backendIPC2/api/paquetes?paquete=${pack}`
@@ -140,6 +148,11 @@ export default {
   top: 90px;
   position: absolute;
   left: 10;
+}
+.new2 {
+  top: 90px;
+  position: absolute;
+  left: 200px;
 }
 .table_Container {
   margin: 100px 10px;

@@ -33,13 +33,7 @@
           >
           </v-list-item>
           
-          <v-list-item
-          prepend-icon=" mdi-cart-arrow-down"
-          title="Pedidos"
-          value="pedidos"
-          @click="changeComponent('')"
-          >
-          </v-list-item>
+
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 250px"></v-main>

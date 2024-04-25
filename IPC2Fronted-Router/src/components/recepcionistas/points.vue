@@ -1,13 +1,14 @@
 <template>
-  <h1>Table of Routes</h1>
+  <h1>Table of Routes and Points</h1>
   <div class="table_Container">
+    <div class="flex-container">
     <v-table
-     height="400px" 
+     height="300px" 
      fixed-header>
       <thead> 
         <tr>
           <th class="text-left">ID Router</th>
-          <th class="text-left">Packages</th>
+          <th class="text-left">Start</th>
           <th class="text-left">Full Stop</th>
         </tr>
       </thead>
@@ -17,21 +18,29 @@
           <td>{{ router.idRuta }}</td>
           <td>{{ router.start }}</td>
           <td>{{ router.end }}</td>
-          
         </tr>
       </tbody>
     </v-table>
-      <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this USER?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+    <v-table
+     height="300px" 
+     fixed-header>
+      <thead> 
+        <tr>
+          <th class="text-left">ID Controller</th>
+          <th class="text-left">Name Controller</th>
+          <th class="text-left">Charge Operator</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr v-for="puntos in puntos" :key="puntos.IdControl">
+          <td>{{ puntos.IdControl }}</td>
+          <td>{{ puntos.nombre }}</td>
+          <td>{{ puntos.cuiOperador }}</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </div>
   </div>
 </template>
 
@@ -45,6 +54,7 @@ export default {
       deleteOption: null,
       dialogDelete: false,
       rutas: [],
+      puntos:[],
     };
   },
 
@@ -56,6 +66,9 @@ export default {
     this.obtenerRutas();
     //actualizar la tabla constantemente
     setInterval(this.obtenerRutas, 5000);//2000 == 20 segundos
+  
+    this.obtenerPoints();
+    setInterval(this.obtenerPoints, 5000)
   },
 
 
@@ -71,11 +84,20 @@ export default {
         .catch((error) => {
           console.error("error al obtener datos");
         });
-
-
     },
-     //metodo para editar y eliminar se obtiene el form 
-   
+
+    obtenerPoints(){
+      axios
+      .get("http://localhost:8080/backendIPC2/api/point")//el metodo que vas hacer
+        
+        .then((respon) => {
+          this.puntos = respon.data;
+          
+        })
+        .catch((error) => {
+          console.error("error al obtener datos");
+        });
+    },
   }
 }
 </script>
@@ -86,30 +108,42 @@ export default {
   position: absolute;
   left: 10;
 }
+
+.flex-container {
+  display: flex;
+  flex-direction: row; /* Cambia la dirección a row para colocar las tablas una al lado de la otra */
+  justify-content: center;
+  width: 100%; 
+}
+
 .deletes{
   top: 90px;
   position: absolute;
   right: 0;
-  
 }
+
 .table_Container {
-  margin: 100px 10px;
-  max-width: -800px;
+  margin: 50px 20px;
+  max-width: -1000px;
   margin-left: 50px;
   margin-right: 0px;
+  width: 100%;
 }
 
 table {
-  width: auto;
+  width: 45%;
   border-collapse: collapse;
-  box-shadow: 0 2px 15px rgba(red, green, blue, alpha);
-  background-color: white;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+  background-color: #676666; 
+  border-radius: 30px; 
+  font-size: 20px;
+  overflow: hidden;
 }
 
 th,
 td {
   border: 1px solid #ddd;
-  padding: 8px 15px;
+  padding: 12px 20px;
   text-align: center;
 }
 

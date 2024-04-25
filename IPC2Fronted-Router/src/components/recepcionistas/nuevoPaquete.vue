@@ -5,31 +5,45 @@
         <v-btn
           class="text-none font-weight-regular"
           prepend-icon="mdi-account"
-          text="New Order"
+          text="New Package"
           variant="tonal"
           v-bind="activatorProps"
         ></v-btn>
       </template>
 
-      <v-card prepend-icon="mdi-account" title="New Order">
+      <v-card prepend-icon="mdi-account" title="New Package">
         <v-card-text>
           <v-row dense>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
-                v-model="bodega"
+                v-model="cuiOperador"
                 :rules="[rules.required]"
-                label="ID Warehouse start*"
+                label="Charge Operator*"
                 type="number"
+                disabled
                 required
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="4" sm="6">
-                
-              <v-select 
-              v-model="destino"
-              :items="bodegasDisponibles" item-title="idBodega" label="Destination Warehouse">
-                <template v-slot:item="{ props, item }">
 
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="cuiRecepcionista"
+                :rules="[rules.required]"
+                label="Charge Receptionist*"
+                type="number"
+                disabled
+                required
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="4" sm="6">
+              <v-select
+                v-model="pedido"
+                :items="pedidos"
+                item-title="noPedido"
+                label="Number Order"
+              >
+                <template v-slot:item="{ props, item }">
                   <v-list-item
                     v-bind="props"
                     :subtitle="item.raw.department"
@@ -37,7 +51,37 @@
                 </template>
               </v-select>
             </v-col>
-            <v-col cols="12" sm="6"> </v-col>
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="bodegaInicial"
+                :rules="[rules.required]"
+                label="Warehouse*"
+                type="number"
+                required
+              ></v-text-field>
+            </v-col>
+            
+
+        <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="cliente"
+                :rules="[rules.required]"
+                label="Customer*"
+                type="number"
+                required
+              ></v-text-field>
+            </v-col>
+
+             <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="peso"
+                :rules="[rules.required]"
+                label="Weight*"
+                type="number"
+                required
+              ></v-text-field>
+            </v-col>
+            
           </v-row>
 
           <small class="text-caption text-medium-emphasis">
@@ -90,6 +134,7 @@
 
 <script>
 import axios from "axios";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
@@ -104,7 +149,23 @@ export default {
       bodegasDisponibles: [],
     };
   },
+   computed: {
+    ...mapState(["loginData"]),
+  },
+   mounted() {
+    this.cargaDatos();
+  },
+
   methods: {
+    cargaDatos(){
+        const loginData = JSON.parse(localStorage.getItem("loginData"));
+        if(loginData){
+            this.cuiOperador = loginData.cuiOperador;
+            this.cuiRecepcionista = loginData.cuiRecepcionista;
+        }else{
+            this.cuiOperador = "Error Comuniquese con alguien"
+        }
+    },
     closeDialogAndClearFields() {
       this.dialog = false;
       this.clearTextFields();

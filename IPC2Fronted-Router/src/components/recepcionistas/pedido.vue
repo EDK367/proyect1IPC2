@@ -4,7 +4,10 @@
 
     <div class="table_Container">
       <div class="new">
-        <nuevoPedido/>
+        <nuevoPedido />
+      </div>
+      <div class="new2">
+        <nuevoPaquete />
       </div>
       <v-table height="400px" fixed-header>
         <thead>
@@ -22,29 +25,28 @@
             <td>{{ pedido.noPedido }}</td>
             <td>{{ pedido.bodegaActual }}</td>
             <td>
-                <template v-if="pedido.estado === 'C'">
-                   <v-icon color="blue">mdi-store</v-icon>
-                </template>
-                <template v-else-if="pedido.estado === 'R'">
-                    <v-icon color="red">mdi-router</v-icon>
-                </template>
-                <template v-else-if="pedido.estado === 'E'">
-                    <v-icon color="green">mdi-package</v-icon>
-                </template>
-                <template v-else>
-                    <v-icon color="yellow">mdi-account-question</v-icon>
-                </template>
-
-            </td>            
+              <template v-if="pedido.estado === 'C'">
+                <v-icon color="blue">mdi-store</v-icon>
+              </template>
+              <template v-else-if="pedido.estado === 'R'">
+                <v-icon color="red">mdi-router</v-icon>
+              </template>
+              <template v-else-if="pedido.estado === 'E'">
+                <v-icon color="green">mdi-package</v-icon>
+              </template>
+              <template v-else>
+                <v-icon color="yellow">mdi-account-question</v-icon>
+              </template>
+            </td>
             <td>{{ pedido.destinoController }}</td>
-        <td>
-            <template v-if="pedido.rutaTomada === 0">
-               <v-icon color="grey">mdi-adjust</v-icon>
-            </template>
-            <template v-else>
-                {{pedido.rutaTomada}}
-            </template>
-        </td>
+            <td>
+              <template v-if="pedido.rutaTomada === 0">
+                <v-icon color="grey">mdi-adjust</v-icon>
+              </template>
+              <template v-else>
+                {{ pedido.rutaTomada }}
+              </template>
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -55,7 +57,8 @@
 <script>
 import axios from "axios";
 import nuevoPedido from "./nuevoPedido.vue";
-
+import nuevoPaquete from "./nuevoPaquete.vue";
+import nuevoPaqueteVue from "./nuevoPaquete.vue";
 export default {
   data() {
     return {
@@ -63,7 +66,8 @@ export default {
     };
   },
   components: {
-    nuevoPedido
+    nuevoPedido,
+    nuevoPaquete,
   },
   mounted() {
     this.obtenerPedidos();
@@ -91,7 +95,11 @@ export default {
   position: absolute;
   left: 10;
 }
-
+.new2 {
+  top: 90px;
+  position: absolute;
+  left: 200px;
+}
 .table_Container {
   margin: 100px 10px;
   max-width: 1500px;
