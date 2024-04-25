@@ -7,17 +7,17 @@ public class bodega {
 
     @Getter
     @Setter
-    private int IdBodega;
+    private int idBodega;
 
     @Getter
     @Setter
-    private long cuiOperador;
+    private int punto;
 
     public bodega() {
 
     }
-    public bodega(int IdBodega, long cuiOperador) {
-        this.IdBodega = IdBodega;
-        this.cuiOperador = cuiOperador;
+    public bodega(int idBodega, int punto) {
+        this.idBodega = idBodega;
+        this.punto = punto;
     }
 }

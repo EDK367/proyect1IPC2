@@ -26,9 +26,18 @@
             @click = "changeComponent('paquetes')"
           ></v-list-item>
           <v-list-item
-          prepend-icon="mdi-clipboard-account"
-          title="Cliente"
-          value="cliente"
+          prepend-icon=" mdi-cart-arrow-down"
+          title="Pedidos"
+          value="pedidos"
+          @click="changeComponent('pedidos')"
+          >
+          </v-list-item>
+          
+          <v-list-item
+          prepend-icon=" mdi-cart-arrow-down"
+          title="Pedidos"
+          value="pedidos"
+          @click="changeComponent('')"
           >
           </v-list-item>
         </v-list>
@@ -42,6 +51,7 @@
 import profiles from "../components/dates/profiles.vue"
 import points from "../components/recepcionistas/points.vue"
 import paquetes from "../components/recepcionistas/paquetes.vue"
+import pedidos from "../components/recepcionistas/pedido.vue"
 export default {
   data() {
     return {
@@ -61,6 +71,8 @@ export default {
         this.use = points;
       }else if(componentName === "paquetes"){
         this.use = paquetes;
+      }else if(componentName === "pedidos"){
+        this.use = pedidos;
       }
     },
   },
@@ -69,6 +81,7 @@ export default {
     profiles,
     points,
     paquetes,
+    pedidos,
   },
 };
 </script>
