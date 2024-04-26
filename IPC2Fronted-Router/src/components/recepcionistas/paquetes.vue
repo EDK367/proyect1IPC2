@@ -3,11 +3,17 @@
     <h1>Table of Packages</h1>
 
     <div class="table_Container">
+       <div class="busqueda">
+      <input type="text" v-model="searchTerm" placeholder="Search Order.">
+      </div>
       <div class="new">
         <nuevoPedido />
       </div>
       <div class="new2">
         <nuevoPaquete />
+      </div>
+      <div class="new3">
+          <nuevoCliente/>
       </div>
       <v-table height="400px" fixed-header>
         <thead>
@@ -26,7 +32,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="paquete in paquetes" :key="paquete.paquete">
+          <tr v-for="paquete in filteredTrayecto" :key="paquete.paquete">
             <td>{{ paquete.paquete }}</td>
             <td>{{ paquete.cuiOperador }}</td>
             <td>{{ paquete.cuiRecepcionista }}</td>
@@ -81,6 +87,7 @@
 import axios from "axios";
 import nuevoPedido from "./nuevoPedido.vue";
 import nuevoPaquete from "./nuevoPaquete.vue";
+import nuevoCliente from "./nuevoCliente.vue"
 export default {
   data() {
     return {
@@ -92,11 +99,22 @@ export default {
   components: {
     nuevoPedido,
     nuevoPaquete,
+    nuevoCliente,
   },
   mounted() {
     this.obtenerPaquetes();
     // Actualizar la tabla constantemente
     setInterval(this.obtenerPaquetes, 5000); // 5000 == 5 segundos
+  },
+  computed: {
+
+    filteredTrayecto() {
+      if (!this.searchTerm) return this.paquetes;
+      return this.paquetes.filter((paquetes) => {
+        return paquetes.noPedido.toString() === this.searchTerm;
+      });
+      
+    },
   },
   methods: {
     obtenerPaquetes() {
@@ -154,6 +172,11 @@ export default {
   position: absolute;
   left: 200px;
 }
+.new3 {
+  top: 90px;
+  position: absolute;
+  left: 380px;
+}
 .table_Container {
   margin: 100px 10px;
   max-width: 1500px;
@@ -184,5 +207,25 @@ th {
 
 .btn {
   margin: 0px 5px;
+}
+.busqueda{
+  top: 110px;
+  position: absolute;
+  right: 700px;
+}
+
+.search-input {
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  width: 250px; 
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
 }
 </style>

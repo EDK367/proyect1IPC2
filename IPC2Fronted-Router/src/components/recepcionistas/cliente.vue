@@ -3,11 +3,8 @@
     <h1>Table of Customer</h1>
 
     <div class="table_Container">
-      <div class="new">
-        
-      </div>
-      <div class="new2">
-        
+       <div class="new">
+        <nuevoCliente />
       </div>
       <v-table height="400px" fixed-header>
         <thead>
@@ -38,7 +35,7 @@
 
 <script>
 import axios from "axios";
-
+import nuevoCliente from "./nuevoCliente.vue"
 export default {
   data() {
     return {
@@ -46,7 +43,7 @@ export default {
     };
   },
   components: {
-
+    nuevoCliente,
   },
   mounted() {
     this.obtenerClientes();

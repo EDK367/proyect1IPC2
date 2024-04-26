@@ -3,6 +3,9 @@
     <h1>Table of Order</h1>
 
     <div class="table_Container">
+       <div class="busqueda">
+      <input type="text" v-model="searchTerm" placeholder="Search Order.">
+      </div>
       <div class="new">
         <nuevoPedido />
       </div>
@@ -24,7 +27,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="pedido in pedidos" :key="pedido.noPedido">
+          <tr v-for="pedido in filteredTrayecto" :key="pedido.noPedido">
             <td>{{ pedido.noPedido }}</td>
             <td>{{ pedido.bodegaActual }}</td>
             <td>
@@ -74,6 +77,16 @@ export default {
     nuevoPaquete,
     nuevoCliente
   },
+  computed: {
+
+    filteredTrayecto() {
+      if (!this.searchTerm) return this.pedidos;
+      return this.pedidos.filter((pedidos) => {
+        return pedidos.noPedido.toString() === this.searchTerm;
+      });
+      
+    },
+  },
   mounted() {
     this.obtenerPedidos();
     // Actualizar la tabla de pedidos cada 5 segundos
@@ -108,7 +121,7 @@ export default {
 .new3 {
   top: 90px;
   position: absolute;
-  left: 390px;
+  left: 380px;
 }
 .table_Container {
   margin: 100px 10px;
@@ -140,5 +153,25 @@ th {
 
 .btn {
   margin: 0px 5px;
+}
+.busqueda{
+  top: 110px;
+  position: absolute;
+  right: 700px;
+}
+
+.search-input {
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  width: 250px; 
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
 }
 </style>

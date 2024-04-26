@@ -16,28 +16,59 @@
           <v-row dense>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
-                v-model="bodega"
+                v-model="nombre"
                 :rules="[rules.required]"
-                label="ID Warehouse start*"
+                label="Customer Name*"
+                required
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="apellido"
+                :rules="[rules.required]"
+                label="Customer Last Name*"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="nit"
+                :rules="[rules.required]"
+                label="NIT*"
                 type="number"
                 required
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="4" sm="6">
-                
-              <v-select 
-              v-model="destino"
-              :items="bodegasDisponibles" item-title="idBodega" label="Destination Warehouse">
-                <template v-slot:item="{ props, item }">
-
-                  <v-list-item
-                    v-bind="props"
-                    :subtitle="item.raw.department"
-                  ></v-list-item>
-                </template>
-              </v-select>
+              <v-text-field
+                v-model="cuiOperador"
+                :rules="[rules.required]"
+                label="Operator*"
+                type="number"
+                disabled
+                required
+              ></v-text-field>
             </v-col>
-            <v-col cols="12" sm="6"> </v-col>
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="cuiRecepcionista"
+                :rules="[rules.required]"
+                label="Receptionist*"
+                type="number"
+                disabled
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="telefono"
+                :rules="[rules.required]"
+                label="Number Phone*"
+                type="number"
+                required
+              ></v-text-field>
+            </v-col>
           </v-row>
 
           <small class="text-caption text-medium-emphasis">
@@ -60,7 +91,14 @@
             color="primary"
             text="Save"
             variant="tonal"
-            :disabled="!bodega || !destino"
+            :disabled="
+            !nombre || 
+            !apellido ||
+            !nit ||
+            !cuiOperador ||
+            !cuiRecepcionista ||
+            !telefono
+            "
             @click="saveDialogAndSubmitForm"
           ></v-btn>
         </v-card-actions>
@@ -90,40 +128,67 @@
 
 <script>
 import axios from "axios";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
     return {
       sheet: false,
       dialog: false,
-      bodega: "",
-      destino: "",
+      nombre: "",
+      apellido: "",
+      nit: "",
+      cuiOperador: "",
+      cuiRecepcionista: "",
+      telefono: "",
       rules: {
         required: (value) => !!value || "Field is required",
       },
-      bodegasDisponibles: [],
     };
   },
+  computed: {
+    ...mapState(["loginData"]),
+  },
+  mounted() {
+    this.cargaDatos();
+  },
   methods: {
+    cargaDatos() {
+      const loginData = JSON.parse(localStorage.getItem("loginData"));
+      if (loginData) {
+        this.cuiOperador = loginData.cuiOperador;
+        this.cuiRecepcionista = loginData.cuiRecepcionista;
+      } else {
+        this.cuiOperador = "Error Comuniquese con alguien";
+      }
+    },
     closeDialogAndClearFields() {
       this.dialog = false;
       this.clearTextFields();
     },
     clearTextFields() {
-      this.bodega = "";
-      this.destino = "";
+      this.nombre = "";
+      this.apellido = "";
+      this.nit = "";
+      this.cuiOperador = "";
+      this.cuiRecepcionista = "";
+      this.telefono = "";
     },
     saveDialogAndSubmitForm() {
       this.submitForm();
     },
     submitForm() {
-      const createRouter = {
-        bodegaActual: this.bodega,
-        destinoController: this.destino,
+      const createCustomer = {
+        nombre: this.nombre,
+        apellido: this.apellido,
+        NIT: this.nit,
+        cuiOperador: this.cuiOperador,
+        cuiRecepcionista: this.cuiRecepcionista,
+        telefono: this.telefono
       };
 
       axios
-        .post("http://localhost:8080/backendIPC2/api/pedidos", createRouter)
+        .post("http://localhost:8080/backendIPC2/api/cliente", createCustomer)
         .then((response) => {
           if (Object.keys(response.data).length > 0) {
             this.dialog = false;
@@ -138,20 +203,6 @@ export default {
           this.sheet = true;
         });
     },
-    cargarBodegas() {
-      axios
-        .get("http://localhost:8080/backendIPC2/api/bodegaOption")
-        .then((responses) => {
-          this.bodegasDisponibles = responses.data;
-          console.log(this.bodegasDisponibles);
-        })
-        .catch((error) => {
-          console.error("Error loading warehouses:", error);
-        });
-    },
-  },
-  mounted() {
-    this.cargarBodegas();
   },
 };
 </script>

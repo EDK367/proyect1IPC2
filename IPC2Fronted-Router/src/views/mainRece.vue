@@ -21,7 +21,7 @@
           ></v-list-item>
                    <v-list-item
           prepend-icon=" mdi-cart-arrow-down"
-          title="Pedidos"
+          title="Order"
           value="pedidos"
           @click="changeComponent('pedidos')"
           >
@@ -29,17 +29,17 @@
           
           <v-list-item
             prepend-icon="mdi-package"
-            title="Paquetes"
+            title="Packages"
             value="paquetes"
             @click = "changeComponent('paquetes')"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
-            title="Cliente"
+            title="Customer"
             value="cliente"
             @click = "changeComponent('cliente')"
           ></v-list-item>
-          
+
 
         </v-list>
       </v-navigation-drawer>
