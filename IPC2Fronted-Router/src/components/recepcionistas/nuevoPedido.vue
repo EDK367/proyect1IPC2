@@ -24,12 +24,13 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="4" sm="6">
-                
-              <v-select 
-              v-model="destino"
-              :items="bodegasDisponibles" item-title="idBodega" label="Destination Warehouse">
+              <v-select
+                v-model="destino"
+                :items="bodegasDisponibles"
+                item-title="idBodega"
+                label="Destination Warehouse"
+              >
                 <template v-slot:item="{ props, item }">
-
                   <v-list-item
                     v-bind="props"
                     :subtitle="item.raw.department"
@@ -102,6 +103,7 @@ export default {
         required: (value) => !!value || "Field is required",
       },
       bodegasDisponibles: [],
+       showBottomSheet: false,
     };
   },
   methods: {

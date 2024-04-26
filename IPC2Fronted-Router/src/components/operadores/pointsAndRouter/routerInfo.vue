@@ -159,7 +159,7 @@ th {
 .busqueda{
   top: 110px;
   position: absolute;
-  right: 1000px;
+  right: 1220px;
 }
 
 .search-input {

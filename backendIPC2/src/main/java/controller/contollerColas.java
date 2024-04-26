@@ -27,8 +27,7 @@ public class contollerColas extends HttpServlet {
     Connection connection = null;
     Gson gson = new Gson();
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
@@ -44,23 +43,21 @@ public class contollerColas extends HttpServlet {
         }
     }
 
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Origin, Authorization");
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doOptions(request, response);
         response.getWriter().print("Desabilitado");
     }
 
     @SneakyThrows
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doOptions(request, response);
+
         JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
         long identificador = jsonObject.get("ID").getAsLong();
         String password = jsonObject.get("pass").getAsString();
@@ -86,7 +83,6 @@ public class contollerColas extends HttpServlet {
                     psActual.setInt(1, bodegaOperador);
                     psActual.setString(2, flag);
                     rsVerification = psActual.executeQuery();
-
                     //aca empieza lo bueno
                     if (flag.equals("C")) {
                         while (rsVerification.next()) {
@@ -94,8 +90,6 @@ public class contollerColas extends HttpServlet {
                             int destino = rsVerification.getInt("DestinoController");
                             updateRuta(response, NoPedido, destino);
                         }
-
-
                     } else if (flag.equals("R")) {
                         int total = 0;
                         String sqlDesactivete = "SELECT COUNT(*) AS total FROM pedido WHERE BodegaActual = ? AND estado = ?";
@@ -103,7 +97,7 @@ public class contollerColas extends HttpServlet {
                         psDesactivete.setInt(1, bodegaOperador);
                         psDesactivete.setString(2, flag);
                         ResultSet rsDesactivete = psDesactivete.executeQuery();
-                        if(rsDesactivete.next()) {
+                        if (rsDesactivete.next()) {
                             total = rsDesactivete.getInt(1);
                         }
                         int contador = 0;
@@ -116,21 +110,20 @@ public class contollerColas extends HttpServlet {
                             updateTraslado(response, NoPedido, rutaTomada, bodegaOperador, destino);
                             contador++;
                             desactivar.desactiveteController(response, rutaTomada, bodegaOperador, flag, contador, total, NoPedido);
-
                         }
-                        //este if decide cuando ya todos los paquetes se movieron
-
-
                     }
-
                 } else {
-                    response.getWriter().print("El operador no tiene poder en esta bodega");
+                    jsonObject = new JsonObject();
+                    jsonObject.addProperty("error", 500);
+                    response.getWriter().print(jsonObject);
+                    //response.getWriter().print("El operador no tiene poder en esta bodega");
                 }
             } else {
-                response.getWriter().print("No existen los permiso necesarios para realizar tal accion ");
+                jsonObject = new JsonObject();
+                jsonObject.addProperty("error", 500);
+                response.getWriter().print(jsonObject);
+                //response.getWriter().print("No existen los permiso necesarios para realizar tal accion ");
             }
-
-
         } catch (SQLException | ClassNotFoundException e) {
             response.getWriter().print("Error de lectura " + e);
         } finally {
@@ -142,8 +135,7 @@ public class contollerColas extends HttpServlet {
     }//fin del post
 
     //meetodo para meter a la ruta
-    private void updateRuta(HttpServletResponse response, int NoPedido, int destino)
-            throws SQLException, IOException {
+    private void updateRuta(HttpServletResponse response, int NoPedido, int destino) throws SQLException, IOException {
 
         ResultSet rsRuta = null;
         try {
@@ -162,16 +154,14 @@ public class contollerColas extends HttpServlet {
                 //obtengo los datos de la ruta y la posicion en la que va el paquete
                 int idRuta = rsRuta.getInt("IDRuta");
                 int posicion = rsRuta.getInt("posicion");
-                response.getWriter().println("NoPedido: " + NoPedido + " - Destino: " + destino +
-                        " - La ruta " + idRuta + " está disponible en la posición " + posicion);
+                response.getWriter().println("NoPedido: " + NoPedido + " - Destino: " + destino + " - La ruta " + idRuta + " está disponible en la posición " + posicion);
                 updateCola update = new updateCola();
                 update.actualizarCola(response, idRuta, NoPedido);
 
                 break;
             }
             if (!rutaDisponible) {
-                response.getWriter().println("NoPedido: " + NoPedido + " - Destino: " + destino +
-                        " - No hay ruta disponible para este destino");
+                response.getWriter().println("NoPedido: " + NoPedido + " - Destino: " + destino + " - No hay ruta disponible para este destino");
             }
         } catch (SQLException | ClassNotFoundException e) {
             response.getWriter().print("Error de lectura " + e);
@@ -184,8 +174,7 @@ public class contollerColas extends HttpServlet {
 
     }
 
-    private void updateTraslado(HttpServletResponse response, int NoPedido, int rutaTomada, int bodegaOperador, int destino)
-            throws SQLException, IOException {
+    private void updateTraslado(HttpServletResponse response, int NoPedido, int rutaTomada, int bodegaOperador, int destino) throws SQLException, IOException {
         ResultSet rsEntregado = null;
         try {
             connection = data.conectar();
@@ -234,7 +223,7 @@ public class contollerColas extends HttpServlet {
                     int ruta = rsEntregado.getInt("RutaTomada");
                     int pos = 1;
                     response.getWriter().println("el pedido " + NoPedido + " se encuentra en la ruta " + ruta);
-                    while(pos != 0) {
+                    while (pos != 0) {
                         boolean activete = true;
                         String sqlRutaController = "SELECT * FROM trayecto WHERE IDRuta = ? and posicion = ? and activete = ?";
                         PreparedStatement psRutaController = connection.prepareStatement(sqlRutaController);
@@ -242,18 +231,18 @@ public class contollerColas extends HttpServlet {
                         psRutaController.setInt(2, pos);
                         psRutaController.setBoolean(3, activete);
                         ResultSet rsRutaController = psRutaController.executeQuery();
-                        if(rsRutaController.next()){
+                        if (rsRutaController.next()) {
                             int posicion = rsRutaController.getInt("posicion");
                             int idControl = rsRutaController.getInt("IDControl");
                             response.getWriter().println("La posicion " + posicion + " esta activo en el control " + idControl);
                             update.actualizarRuta(response, ruta, idControl, NoPedido, posicion);
                             pos = 0;
-                        }else{
+                        } else {
                             //response.getWriter().println("La posicion " + pos + " no esta activa");
                             pos++;
                         }
                     }
-                }else{
+                } else {
                     response.getWriter().println("No se encontro el pedido");
                 }
             }

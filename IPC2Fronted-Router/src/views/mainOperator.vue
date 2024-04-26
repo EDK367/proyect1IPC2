@@ -42,19 +42,33 @@
           <v-list-item
             prepend-icon=" mdi-cart-arrow-down"
             title="Order"
-            value="pedido"
-          ></v-list-item>
-
+            value="pedidos"
+            @click="changeComponent('pedidos')"
+          >
+          </v-list-item>
           <v-list-item
             prepend-icon="mdi-package"
             title="Packages"
-            value="paquete"
+            value="paquetes"
+            @click="changeComponent('paquetes')"
           ></v-list-item>
-
+          <v-list-item
+            prepend-icon="mdi-cart-check"
+            title="Delivered Orders"
+            value="entregado"
+            @click="changeComponent('entregado')"
+          >
+          </v-list-item>
+          <v-list-item
+            prepend-icon="mdi-account"
+            title="Customer"
+            value="customer"
+            @click="changeComponent('customer')"
+          ></v-list-item>
           <v-list-item
             prepend-icon="mdi-ballot-outline"
-            title="Reports"
-            value="reports"
+            title="Invoice"
+            value="invoice"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -68,7 +82,11 @@ import profiles from "../components/dates/profiles.vue";
 import tableRece from "../components/operadores/recepcionistasTable.vue";
 import point from "../components/operadores/pointsAndRouter/points.vue";
 import router from "../components/operadores/pointsAndRouter/router.vue";
-import routerInfo from "../components/operadores/pointsAndRouter/routerInfo.vue"
+import routerInfo from "../components/operadores/pointsAndRouter/routerInfo.vue";
+import pedidos from "../components/operadores/order/pedidosOp.vue";
+import paquetes from "../components/operadores/order/package.vue";
+import customer from "../components/recepcionistas/cliente.vue";
+import entregado from "../components/operadores/order/entregado.vue"
 export default {
   data() {
     return {
@@ -89,8 +107,16 @@ export default {
         this.use = point;
       } else if (componentName === "router") {
         this.use = router;
-      }else if(componentName === "routerInfo"){
+      } else if (componentName === "routerInfo") {
         this.use = routerInfo;
+      } else if (componentName === "pedidos") {
+        this.use = pedidos;
+      } else if (componentName === "paquetes") {
+        this.use = paquetes;
+      } else if (componentName === "customer") {
+        this.use = customer;
+      }else if(componentName === "entregado"){
+        this.use = entregado;
       }
     },
   },
@@ -100,7 +126,11 @@ export default {
     profiles,
     point,
     router,
-    routerInfo
+    routerInfo,
+    pedidos,
+    paquetes,
+    customer,
+    entregado,
   },
 };
 </script>

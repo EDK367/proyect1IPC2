@@ -56,7 +56,7 @@
                 :rules="[rules.required]"
                 label="Receptionist*"
                 type="number"
-                disabled
+   
                 required
               ></v-text-field>
             </v-col>
