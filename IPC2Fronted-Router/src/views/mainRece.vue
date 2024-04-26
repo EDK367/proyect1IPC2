@@ -19,6 +19,14 @@
             value="points"
             @click="changeComponent('points')"
           ></v-list-item>
+                   <v-list-item
+          prepend-icon=" mdi-cart-arrow-down"
+          title="Pedidos"
+          value="pedidos"
+          @click="changeComponent('pedidos')"
+          >
+          </v-list-item>
+          
           <v-list-item
             prepend-icon="mdi-package"
             title="Paquetes"
@@ -26,12 +34,11 @@
             @click = "changeComponent('paquetes')"
           ></v-list-item>
           <v-list-item
-          prepend-icon=" mdi-cart-arrow-down"
-          title="Pedidos"
-          value="pedidos"
-          @click="changeComponent('pedidos')"
-          >
-          </v-list-item>
+            prepend-icon="mdi-account"
+            title="Cliente"
+            value="cliente"
+            @click = "changeComponent('cliente')"
+          ></v-list-item>
           
 
         </v-list>
@@ -46,10 +53,11 @@ import profiles from "../components/dates/profiles.vue"
 import points from "../components/recepcionistas/points.vue"
 import paquetes from "../components/recepcionistas/paquetes.vue"
 import pedidos from "../components/recepcionistas/pedido.vue"
+import cliente from "../components/recepcionistas/cliente.vue"
 export default {
   data() {
     return {
-      use: paquetes,
+      use: pedidos,
       drawer: true,
       rail: true,
       
@@ -67,6 +75,8 @@ export default {
         this.use = paquetes;
       }else if(componentName === "pedidos"){
         this.use = pedidos;
+      }else if(componentName === "cliente"){
+        this.use = cliente;
       }
     },
   },
@@ -76,6 +86,7 @@ export default {
     points,
     paquetes,
     pedidos,
+    cliente,
   },
 };
 </script>

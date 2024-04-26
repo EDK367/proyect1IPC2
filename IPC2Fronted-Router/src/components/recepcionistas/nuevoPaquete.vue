@@ -8,6 +8,7 @@
           text="New Package"
           variant="tonal"
           v-bind="activatorProps"
+          @click="cargaDatos()"
         ></v-btn>
       </template>
 
@@ -41,7 +42,7 @@
                 v-model="pedido"
                 :items="pedidos"
                 item-title="noPedido"
-                label="Number Order"
+                label="Number Order*"
               >
                 <template v-slot:item="{ props, item }">
                   <v-list-item
@@ -62,11 +63,11 @@
             </v-col>
             
 
-        <v-col cols="12" md="4" sm="6">
+         <v-col cols="12" md="4" sm="6">
               <v-text-field
                 v-model="cliente"
                 :rules="[rules.required]"
-                label="Customer*"
+                label="Customer/Cliente*"
                 type="number"
                 required
               ></v-text-field>
@@ -81,7 +82,25 @@
                 required
               ></v-text-field>
             </v-col>
-            
+             <v-col cols="12" sm="6">
+              <v-row>
+                <v-col cols="12">
+                  <v-checkbox
+                    v-model="activete"
+                    :color="activete ? 'green' : 'red'"
+                    label="Activete"
+                    @click="toggleActivete"
+                    hide-details
+                  >
+                  <template v-slot:label>
+                    <v-icon :color="activete ? 'green' : 'red'">
+                      {{activete ? 'mdi-cash' : 'mdi-cash-multiple'}}
+                    </v-icon>
+                  </template>
+                  </v-checkbox>
+                </v-col>
+              </v-row>
+            </v-col>
           </v-row>
 
           <small class="text-caption text-medium-emphasis">
@@ -104,7 +123,14 @@
             color="primary"
             text="Save"
             variant="tonal"
-            :disabled="!bodega || !destino"
+            :disabled="
+            !cuiOperador ||
+            !cuiRecepcionista ||
+            !pedido ||
+            !bodegaInicial ||
+            !cliente || 
+            !peso
+             "
             @click="saveDialogAndSubmitForm"
           ></v-btn>
         </v-card-actions>
@@ -121,10 +147,13 @@
           <br />
 
           <div>
-            There was an error creating the new route. Please check the data.
+             No se pudo crear un nuevo paquete Posibles Errores
             <br />
-            Possible errors: ID of the route already used
+            El cliente no Existe 
             <br />
+            No existe la tarifa Local Para esta Bodega
+            <br />
+            La bodega Inicial no Coincide con la Bodega del No.Pedido
           </div>
         </v-card-text>
       </v-card>
@@ -141,12 +170,18 @@ export default {
     return {
       sheet: false,
       dialog: false,
-      bodega: "",
-      destino: "",
+      cuiOperador: "",
+      cuiRecepcionista: "",
+      pedido: "",
+      bodegaInicial: "",
+      cliente: "",
+      peso: "",
+      activete: true,
       rules: {
         required: (value) => !!value || "Field is required",
       },
-      bodegasDisponibles: [],
+      pedidos: [],
+      customer: [],
     };
   },
    computed: {
@@ -171,25 +206,37 @@ export default {
       this.clearTextFields();
     },
     clearTextFields() {
-      this.bodega = "";
-      this.destino = "";
+      this.cuiOperador = "";
+      this.cuiRecepcionista = "";
+      this.pedido = "";
+      this.bodegaInicial = "";
+      this.cliente = "";
+      this.peso = "";
+      this.activete = true;
     },
     saveDialogAndSubmitForm() {
       this.submitForm();
     },
     submitForm() {
       const createRouter = {
-        bodegaActual: this.bodega,
-        destinoController: this.destino,
+        //en el Json        //en el submit
+        cuiOperador: this.cuiOperador,
+        cuiRecepcionista: this.cuiRecepcionista,
+        noPedido: this.pedido,
+        bodegaInicial: this.bodegaInicial,
+        cliente: this.cliente,
+        peso: this.peso,
+        tarifaGlobal: this.activete,
       };
+          console.log("este es el form ", createRouter)
 
       axios
-        .post("http://localhost:8080/backendIPC2/api/pedidos", createRouter)
+        .post("http://localhost:8080/backendIPC2/api/paquetes", createRouter)
         .then((response) => {
+          console.log(response.data)
           if (Object.keys(response.data).length > 0) {
             this.dialog = false;
             this.clearTextFields();
-            console.log(response.data);
           } else {
             this.sheet = true;
           }
@@ -201,13 +248,26 @@ export default {
     },
     cargarBodegas() {
       axios
-        .get("http://localhost:8080/backendIPC2/api/bodegaOption")
+        .get("http://localhost:8080/backendIPC2/api/pedidos")
         .then((responses) => {
-          this.bodegasDisponibles = responses.data;
-          console.log(this.bodegasDisponibles);
+          this.pedidos = responses.data;
+          this.pedidos = this.pedidos.filter(pedidos => pedidos.estado === 'C');
+
+          console.log(this.pedidos);
         })
         .catch((error) => {
           console.error("Error loading warehouses:", error);
+        });
+    },
+    cargarClientes(){
+        axios
+        .get("http://localhost:8080/backendIPC2/api/cliente")
+        .then((respon) => {
+          this.customer = respon.data;
+          console.log(this.customer);
+        })
+        .catch((error) => {
+          console.error("Error loading customer:", error);
         });
     },
   },

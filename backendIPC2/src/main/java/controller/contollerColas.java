@@ -166,6 +166,7 @@ public class contollerColas extends HttpServlet {
                         " - La ruta " + idRuta + " está disponible en la posición " + posicion);
                 updateCola update = new updateCola();
                 update.actualizarCola(response, idRuta, NoPedido);
+
                 break;
             }
             if (!rutaDisponible) {

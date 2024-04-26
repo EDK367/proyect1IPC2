@@ -21,6 +21,7 @@ data(){
   computed: {
     loginData() {
       return this.$store.state.loginData;
+      
     },
     formato(){
       const info = JSON.stringify(this.loginData, null, 2);

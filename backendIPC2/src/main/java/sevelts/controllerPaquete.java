@@ -27,7 +27,7 @@ public class controllerPaquete extends HttpServlet {
     conexionData data = new conexionData();
     Gson gson = new Gson();
     Connection connection = null;
-
+    JsonObject objeto = new JsonObject();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -117,7 +117,7 @@ public class controllerPaquete extends HttpServlet {
         newPaquete.setTarifaGlobal(tarifaGlobal);
 
         ResultSet rsVerification = null;
-
+        JsonObject jsonResponse = new JsonObject();
         try {
             connection = data.conectar();
             String sqlVerification = "SELECT * FROM cliente WHERE NIT = ?";
@@ -164,8 +164,11 @@ public class controllerPaquete extends HttpServlet {
                                 psInsert.setBoolean(7, tarifaGlobal);
                                 psInsert.setFloat(8, total);
                                 psInsert.executeUpdate();
-                                response.getWriter().println("Paquete insertado correctamente con global");
+                                objeto = new JsonObject();
+                                objeto.addProperty("noPedido", newPaquete.getNoPedido());
+                                response.getWriter().print(objeto);
                             } else {
+                                float total;
                                 String sqlTarifaLocal = "SELECT * FROM tarifalocal ORDER BY IdTarifa AND IDControl DESC LIMIT 1";
                                 PreparedStatement psTarifaLocal = connection.prepareStatement(sqlTarifaLocal);
                                 ResultSet rsTarifaLocal = psTarifaLocal.executeQuery();
@@ -174,7 +177,20 @@ public class controllerPaquete extends HttpServlet {
                                 if (rsTarifaLocal.next()) {
                                     tarifaLocalValue = rsTarifaLocal.getFloat("tarifalocal");
                                 }
-                                float total = tarifaLocalValue * peso;
+                                if(tarifaLocalValue == 0.0f){
+                                    String sqlTarifaGlobal = "SELECT tarifaglobal FROM tarifaglobal ORDER BY IdTarifaGloblal DESC LIMIT 1";
+                                    PreparedStatement psTarifaGlobal = connection.prepareStatement(sqlTarifaGlobal);
+                                    ResultSet rsTarifaGlobal = psTarifaGlobal.executeQuery();
+
+                                    float tarifaGlobalValue = 0.0f;
+                                    if (rsTarifaGlobal.next()) {
+                                        tarifaGlobalValue = rsTarifaGlobal.getFloat("tarifaglobal");
+                                    }
+                                     total = tarifaGlobalValue * peso;
+                                }else{
+                                     total = tarifaLocalValue * peso;
+                                }
+
                                 String sqlInsert = "INSERT INTO paquetes( cui_operador, cui_recepcionista, NoPedido, BodegaInicial, NIT, peso, tarifaGlobal, total) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
                                 PreparedStatement psInsert = connection.prepareStatement(sqlInsert);
                                 psInsert.setLong(1, cuiOperador);
@@ -186,22 +202,34 @@ public class controllerPaquete extends HttpServlet {
                                 psInsert.setBoolean(7, tarifaGlobal);
                                 psInsert.setFloat(8, total);
                                 psInsert.executeUpdate();
-                                response.getWriter().println("Paquete insertado correctamente con local");
+                                objeto = new JsonObject();
+                                objeto.addProperty("noPedido", newPaquete.getNoPedido());
+                                response.getWriter().print(objeto);
                             }
                         } else {
-                            response.getWriter().println("Error el recepcionista no existe en la base de datos");
+                            objeto = new JsonObject();
+                            response.getWriter().print(objeto);
+                            //response.getWriter().println("Error el recepcionista no existe en la base de datos");
                         }
                     } else {
-                        response.getWriter().println("Error el operador no existe en la base de datos");
+                        objeto = new JsonObject();
+                        response.getWriter().print(objeto);
+                       // response.getWriter().println("Error el operador no existe en la base de datos");
                     }
                 } else {
-                    response.getWriter().println("Error el pedido no existe en la base de o no coincide con la bodega");
+                    objeto = new JsonObject();
+                    response.getWriter().print(objeto);
+                    //response.getWriter().println("Error el pedido no existe en la base de o no coincide con la bodega");
                 }
             } else {
-                response.getWriter().println("Error el cliente no existe en la base de datos");
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
+                //  response.getWriter().println("Error el cliente no existe en la base de datos");
             }
         } catch (SQLException | ClassNotFoundException e) {
-            response.getWriter().println("Error al crear un paquete " + e);
+            objeto = new JsonObject();
+            response.getWriter().print(objeto);
+            //response.getWriter().println("Error al crear un paquete " + e);
         } finally {
             if (rsVerification != null) {
                 rsVerification.close();

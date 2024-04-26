@@ -112,6 +112,7 @@ public class login extends HttpServlet {
                     objetoLogin.addProperty("apellido", rs.getString("apellido"));
                     objetoLogin.addProperty("correo", rs.getString("correo"));
                     objetoLogin.addProperty("contraseña", rs.getString("contraseña"));
+                    objetoLogin.addProperty("cuiOperador", rs.getLong("cui_operador"));
                     System.out.println(objetoLogin);
                     response.getWriter().print(gson.toJson(objetoLogin));
                     objetoLogin = new JsonObject();

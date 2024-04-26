@@ -9,6 +9,9 @@
       <div class="new2">
         <nuevoPaquete />
       </div>
+      <div class="new3">
+          <nuevoCliente/>
+      </div>
       <v-table height="400px" fixed-header>
         <thead>
           <tr>
@@ -59,6 +62,7 @@ import axios from "axios";
 import nuevoPedido from "./nuevoPedido.vue";
 import nuevoPaquete from "./nuevoPaquete.vue";
 import nuevoPaqueteVue from "./nuevoPaquete.vue";
+import nuevoCliente from "./nuevoCliente.vue"
 export default {
   data() {
     return {
@@ -68,6 +72,7 @@ export default {
   components: {
     nuevoPedido,
     nuevoPaquete,
+    nuevoCliente
   },
   mounted() {
     this.obtenerPedidos();
@@ -99,6 +104,11 @@ export default {
   top: 90px;
   position: absolute;
   left: 200px;
+}
+.new3 {
+  top: 90px;
+  position: absolute;
+  left: 390px;
 }
 .table_Container {
   margin: 100px 10px;
