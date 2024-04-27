@@ -293,4 +293,3 @@ public class controllerTrayecto extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 }//fin de la clase
-

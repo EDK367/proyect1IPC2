@@ -22,6 +22,7 @@ import java.sql.SQLException;
 public class contollerColas extends HttpServlet {
     updateCola update = new updateCola();
     controllerDesactivete desactivar = new controllerDesactivete();
+    updateFactura factura = new updateFactura();
     //llamados importantes
     conexionData data = new conexionData();
     Connection connection = null;
@@ -158,6 +159,8 @@ public class contollerColas extends HttpServlet {
                 updateCola update = new updateCola();
                 update.actualizarCola(response, idRuta, NoPedido);
 
+                //obtener la factura
+                factura.updateFactura(response, NoPedido, idRuta);
                 break;
             }
             if (!rutaDisponible) {

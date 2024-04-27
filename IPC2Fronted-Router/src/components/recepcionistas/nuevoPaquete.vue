@@ -189,6 +189,7 @@ export default {
   },
    mounted() {
     this.cargaDatos();
+    this.cargarBodegas()
   },
 
   methods: {
@@ -272,6 +273,7 @@ export default {
     },
   },
   mounted() {
+    this.cargaDatos();
     this.cargarBodegas();
   },
 };
