@@ -1,21 +1,22 @@
 <template>
   <div>
-    
     <h1>Table of Journey</h1>
     <div class="table_Container">
       <div class="new">
-        <nuevoTrayecto/>
-        
+        <nuevoTrayecto />
       </div>
+
       <div class="busqueda">
-      <input type="text" v-model="searchTerm" placeholder="Search Router.">
+        <input type="text" v-model="searchTerm" placeholder="Search Router." />
       </div>
       <v-table height="400px" fixed-header>
         <div class="deletes">
-          <putDelete/>
+          <putDelete />
         </div>
-        
-        <thead> 
+        <div class="new2">
+          <activete />
+        </div>
+        <thead>
           <tr>
             <th class="text-left">ID Router</th>
             <th class="text-left">ID Controller</th>
@@ -29,24 +30,44 @@
             <td>{{ trayecto.idRuta }}</td>
             <td>{{ trayecto.idControl }}</td>
             <td>{{ trayecto.posicion }}</td>
-            <td><v-icon :color="trayecto.activete ? 'green' : 'red'">
-                {{ trayecto.activete ? 'mdi-flag-checkered' : 'mdi-flag-remove' }}
-              </v-icon>
-              </td>
             <td>
-              <v-btn @click="option(trayecto)" prepend-icon="$vuetify" variant="text"> SELECT </v-btn>
-              <v-icon size="small" @click="deleteItem(trayecto)">mdi-delete</v-icon>
+              <v-icon :color="trayecto.activete ? 'green' : 'red'">
+                {{
+                  trayecto.activete ? "mdi-flag-checkered" : "mdi-flag-remove"
+                }}
+              </v-icon>
+            </td>
+            <td>
+              <v-btn
+                @click="option(trayecto)"
+                prepend-icon="$vuetify"
+                variant="text"
+              >
+                SELECT
+              </v-btn>
+              <v-icon size="small" @click="deleteItem(trayecto)"
+                >mdi-delete</v-icon
+              >
             </td>
           </tr>
         </tbody>
       </v-table>
       <v-dialog v-model="dialogDelete" max-width="500px">
         <v-card>
-          <v-card-title class="text-h5">Are you sure you want to delete this USER?</v-card-title>
+          <v-card-title class="text-h5"
+            >Are you sure you want to delete this USER?</v-card-title
+          >
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
-            <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
+            <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="blue-darken-1"
+              variant="text"
+              @click="deleteItemConfirm"
+              >OK</v-btn
+            >
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -59,7 +80,7 @@
 import axios from "axios";
 import nuevoTrayecto from "./newTrayecto.vue";
 import putDelete from "./deleteAndPuteRouter";
-
+import activete from "../routerInfo/activation";
 export default {
   data() {
     return {
@@ -72,19 +93,21 @@ export default {
   components: {
     nuevoTrayecto,
     putDelete,
+    activete,
   },
   mounted() {
     this.obtenerTrayecto();
     setInterval(this.obtenerTrayecto, 5000);
   },
   computed: {
-
     filteredTrayecto() {
       if (!this.searchTerm) return this.trayecto;
       return this.trayecto.filter((trayecto) => {
-        return trayecto.idRuta.toString().toLowerCase().includes(this.searchTerm.toLowerCase());
+        return trayecto.idRuta
+          .toString()
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase());
       });
-      
     },
   },
   methods: {
@@ -99,11 +122,14 @@ export default {
         });
     },
     option(trayecto) {
-      localStorage.setItem('optionPoint', JSON.stringify(trayecto));
-      console.log('Contenido de localStorage:', localStorage.getItem('optionPoint'));
+      localStorage.setItem("optionPoint", JSON.stringify(trayecto));
+      console.log(
+        "Contenido de localStorage:",
+        localStorage.getItem("optionPoint")
+      );
     },
     deleteItem(trayecto) {
-      console.log("Delete", trayecto)
+      console.log("Delete", trayecto);
       this.deleteOption = trayecto;
       this.dialogDelete = true;
     },
@@ -112,11 +138,13 @@ export default {
     },
     deleteItemConfirm(trayecto) {
       this.dialogDelete = false;
-      
-     const idRuta = this.deleteOption.idRuta;
-     const idControl = this.deleteOption.idControl;
+
+      const idRuta = this.deleteOption.idRuta;
+      const idControl = this.deleteOption.idControl;
       axios
-         .delete(`http://localhost:8080/backendIPC2/api/trayecto?idRuta=${idRuta}&idControl=${idControl}`)
+        .delete(
+          `http://localhost:8080/backendIPC2/api/trayecto?idRuta=${idRuta}&idControl=${idControl}`
+        )
         .then((response) => {
           console.log("Administrador eliminado con éxito");
           this.obtenerTrayecto();
@@ -140,6 +168,11 @@ export default {
   position: absolute;
   right: 0;
 }
+.new2 {
+  top: 90px;
+  position: absolute;
+  right: 200px;
+}
 .table_Container {
   margin: 100px 10px;
   max-width: -800px;
@@ -152,7 +185,8 @@ table {
   box-shadow: 0 2px 15px rgba(red, green, blue, alpha);
   background-color: white;
 }
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px 15px;
   text-align: center;
@@ -167,7 +201,7 @@ th {
   margin: 0px 5px;
 }
 
-.busqueda{
+.busqueda {
   top: 110px;
   position: absolute;
   right: 1000px;
@@ -179,12 +213,12 @@ th {
   border: 1px solid #ccc;
   font-size: 16px;
   transition: all 0.3s ease;
-  width: 250px; 
+  width: 250px;
 }
 
 .search-input:focus {
   outline: none;
   border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 </style>
