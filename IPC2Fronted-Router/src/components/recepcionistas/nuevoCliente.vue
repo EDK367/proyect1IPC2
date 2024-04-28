@@ -11,7 +11,7 @@
         ></v-btn>
       </template>
 
-      <v-card prepend-icon="mdi-account" title="New Order">
+      <v-card prepend-icon="mdi-account" title="New Customer">
         <v-card-text>
           <v-row dense>
             <v-col cols="12" md="4" sm="6">

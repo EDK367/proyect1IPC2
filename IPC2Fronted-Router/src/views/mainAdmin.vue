@@ -52,12 +52,6 @@
             value="tablesTrayecto"
             @click="changeComponent('tablesTrayecto')"
           ></v-list-item>
-
-          <v-list-item
-            prepend-icon="mdi-ballot-outline"
-            title="Reports"
-            value="reports"
-          ></v-list-item>
           <v-list-item
             prepend-icon="mdi-bank"
             title="TarifaGlobal"
@@ -76,6 +70,19 @@
             value="tarifasLocal"
             @click="changeComponent('tarifaLocal')"
           ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-ballot-outline"
+            title="Invoice"
+            value="invoice"
+            @click="changeComponent('facturas')"
+          ></v-list-item>
+
+          <v-list-item
+            prepend-icon="mdi-book"
+            title="Reports"
+            value="reports"
+            @click="changeComponent('reportes')"
+          ></v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 250px"></v-main>
@@ -90,10 +97,12 @@ import tablesOp from "../components/administrador/operator.vue";
 import tablesRe from "../components/administrador/recepcion.vue";
 import tablesPoint from "../components/administrador/points/points.vue";
 import tablesRouter from "../components/administrador/routers/router.vue";
-import tablesTrayecto from "../components/administrador/routerInfo/routerInfo.vue"
+import tablesTrayecto from "../components/administrador/routerInfo/routerInfo.vue";
 import tarifaGlobal from "../components/administrador/tarifas/global.vue";
 import tarifaLocal from "../components/administrador/tarifas/local.vue";
-import customer from "../components/recepcionistas/cliente.vue"
+import customer from "../components/recepcionistas/cliente.vue";
+import facturas from "../components/report/invoices.vue";
+import reportes from "../components/report/reports/viewMain.vue";
 export default {
   data() {
     return {
@@ -120,12 +129,16 @@ export default {
         this.use = tarifaGlobal;
       } else if (componentName === "tarifaLocal") {
         this.use = tarifaLocal;
-      }else if(componentName === "tableRouter"){
+      } else if (componentName === "tableRouter") {
         this.use = tablesRouter;
-      }else if(componentName === "tablesTrayecto"){
+      } else if (componentName === "tablesTrayecto") {
         this.use = tablesTrayecto;
-      }else if(componentName === "customer"){
+      } else if (componentName === "customer") {
         this.use = customer;
+      } else if (componentName === "facturas") {
+        this.use = facturas;
+      } else if(componentName === "reportes") {
+        this.use = reportes;
       }
     },
   },
@@ -141,6 +154,8 @@ export default {
     tarifaGlobal,
     tarifaLocal,
     customer,
+    facturas,
+    reportes,
   },
 };
 </script>

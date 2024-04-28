@@ -19,28 +19,32 @@
             value="points"
             @click="changeComponent('points')"
           ></v-list-item>
-                   <v-list-item
-          prepend-icon=" mdi-cart-arrow-down"
-          title="Order"
-          value="pedidos"
-          @click="changeComponent('pedidos')"
+          <v-list-item
+            prepend-icon=" mdi-cart-arrow-down"
+            title="Order"
+            value="pedidos"
+            @click="changeComponent('pedidos')"
           >
           </v-list-item>
-          
+
           <v-list-item
             prepend-icon="mdi-package"
             title="Packages"
             value="paquetes"
-            @click = "changeComponent('paquetes')"
+            @click="changeComponent('paquetes')"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
             title="Customer"
             value="cliente"
-            @click = "changeComponent('cliente')"
+            @click="changeComponent('cliente')"
           ></v-list-item>
-
-
+          <v-list-item
+            prepend-icon="mdi-ballot-outline"
+            title="Invoice"
+            value="invoice"
+            @click="changeComponent('facturas')"
+          ></v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 250px"></v-main>
@@ -49,34 +53,36 @@
 </template>
 
 <script>
-import profiles from "../components/dates/profiles.vue"
-import points from "../components/recepcionistas/points.vue"
-import paquetes from "../components/recepcionistas/paquetes.vue"
-import pedidos from "../components/recepcionistas/pedido.vue"
-import cliente from "../components/recepcionistas/cliente.vue"
+import profiles from "../components/dates/profiles.vue";
+import points from "../components/recepcionistas/points.vue";
+import paquetes from "../components/recepcionistas/paquetes.vue";
+import pedidos from "../components/recepcionistas/pedido.vue";
+import cliente from "../components/recepcionistas/cliente.vue";
+import facturas from "../components/report/invoices.vue"
 export default {
   data() {
     return {
       use: pedidos,
       drawer: true,
       rail: true,
-      
     };
   },
 
   methods: {
     // Método para cambiar el componente mostrado
     changeComponent(componentName) {
-      if(componentName === "profiles"){
+      if (componentName === "profiles") {
         this.use = profiles;
-      }else if(componentName === "points"){
+      } else if (componentName === "points") {
         this.use = points;
-      }else if(componentName === "paquetes"){
+      } else if (componentName === "paquetes") {
         this.use = paquetes;
-      }else if(componentName === "pedidos"){
+      } else if (componentName === "pedidos") {
         this.use = pedidos;
-      }else if(componentName === "cliente"){
+      } else if (componentName === "cliente") {
         this.use = cliente;
+      }else if(componentName === "facturas"){
+        this.use = facturas;
       }
     },
   },
@@ -87,6 +93,7 @@ export default {
     paquetes,
     pedidos,
     cliente,
+    facturas,
   },
 };
 </script>

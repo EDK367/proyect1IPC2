@@ -75,6 +75,7 @@
             prepend-icon="mdi-ballot-outline"
             title="Invoice"
             value="invoice"
+            @click="changeComponent('facturas')"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -94,6 +95,7 @@ import paquetes from "../components/operadores/order/package.vue";
 import customer from "../components/recepcionistas/cliente.vue";
 import entregado from "../components/operadores/order/entregado.vue";
 import local from "../components/operadores/tarifaLocal/local.vue";
+import facturas from "../components/report/invoices.vue";
 export default {
   data() {
     return {
@@ -126,6 +128,8 @@ export default {
         this.use = entregado;
       }else if(componentName === "local"){
         this.use = local;
+      }else if(componentName === "facturas"){
+        this.use = facturas;
       }
     },
   },
@@ -141,6 +145,7 @@ export default {
     customer,
     entregado,
     local,
+    facturas,
   },
 };
 </script>
