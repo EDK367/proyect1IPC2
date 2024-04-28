@@ -2,6 +2,7 @@ package sevelts;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import controller.createFactura;
 import dataBase.conexionData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,6 +29,7 @@ public class controllerPaquete extends HttpServlet {
     Gson gson = new Gson();
     Connection connection = null;
     JsonObject objeto = new JsonObject();
+    createFactura fac = new createFactura();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -165,13 +167,9 @@ public class controllerPaquete extends HttpServlet {
                                 psInsert.setFloat(8, total);
                                 psInsert.executeUpdate();
                                 //esta funcion es para poder crear facturas a base de paquetes existentes
-                                String sqlFactura = "INSERT INTO facturas(cui_operador, cui_recepcionista, NoPedido, NoBodega) VALUES(?,?,?,?)";
-                                PreparedStatement psFactura = connection.prepareStatement(sqlFactura);
-                                psFactura.setLong(1, cuiOperador);
-                                psFactura.setLong(2, cuiRecepcionista);
-                                psFactura.setInt(3, noPedido);
-                                psFactura.setInt(4, bodegaIncial);
-                                psFactura.executeUpdate();
+                                fac.createFactura(response, noPedido, cuiOperador, cuiRecepcionista, bodegaIncial);
+
+
                                 objeto = new JsonObject();
                                 objeto.addProperty("noPedido", newPaquete.getNoPedido());
                                 response.getWriter().print(objeto);
@@ -210,6 +208,9 @@ public class controllerPaquete extends HttpServlet {
                                 psInsert.setBoolean(7, tarifaGlobal);
                                 psInsert.setFloat(8, total);
                                 psInsert.executeUpdate();
+                                //esta funcion es para poder crear facturas a base de paquetes existentes
+                                fac.createFactura(response, noPedido, cuiOperador, cuiRecepcionista, bodegaIncial);
+
                                 objeto = new JsonObject();
                                 objeto.addProperty("noPedido", newPaquete.getNoPedido());
                                 response.getWriter().print(objeto);

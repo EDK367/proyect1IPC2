@@ -109,6 +109,7 @@ public class contollerColas extends HttpServlet {
                             int rutaTomada = rsVerification.getInt("RutaTomada");
                             int destino = rsVerification.getInt("DestinoController");
                             updateTraslado(response, NoPedido, rutaTomada, bodegaOperador, destino);
+                            factura.updateTotal(response, NoPedido);
                             contador++;
                             desactivar.desactiveteController(response, rutaTomada, bodegaOperador, flag, contador, total, NoPedido);
                         }
