@@ -30,13 +30,13 @@
           <td>{{ rece.contraseña }}</td>
           <td>
             <v-btn
-              @click="option(recepcion)"
+              @click="option(rece)"
               prepend-icon="$vuetify"
               variant="text"
             >
               SELECT
             </v-btn>
-            <v-icon size="small" @click="deleteItem(recepcion)">
+            <v-icon size="small" @click="deleteItem(rece)">
               mdi-delete
             </v-icon>
           </td>
@@ -66,7 +66,7 @@
 <script>
 import axios from "axios";
 import nuevoUser from "./new.vue";
-import deletes from "../option/deleteAndPut.vue";
+import deletes from "../option/deleteAndPutRecepcion.vue";
   export default {
   data() {
     return {
@@ -84,7 +84,6 @@ import deletes from "../option/deleteAndPut.vue";
 
   mounted() {
     this.obtenerRecepecion();
-    notExistentVue: false;
     //actualizar la tabla constantemente
     setInterval(this.obtenerRecepecion, 5000); //2000 == 20 segundos
   },
@@ -93,11 +92,9 @@ import deletes from "../option/deleteAndPut.vue";
     obtenerRecepecion() {
       axios //nombre de como lo declaraste
         .get("http://localhost:8080/backendIPC2/api/recepcion")
-
         .then((response) => {
           this.recepcion = response.data;
           const cuiOperador = this.loginData.cuiOperador;
-
           this.recepcion = this.recepcion.filter(
             (rece) => rece.cuiOperador === cuiOperador
           );

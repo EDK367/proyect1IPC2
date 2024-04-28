@@ -64,7 +64,12 @@
             value="tarifasGlobales"
             @click="changeComponent('tarifaGlobal')"
           ></v-list-item>
-
+          <v-list-item
+            prepend-icon="mdi-account-cog"
+            title="Customer"
+            value="customer"
+            @click="changeComponent('customer')"
+          ></v-list-item>
           <v-list-item
             prepend-icon="mdi-bank-transfer"
             title="TarifaLocal"
@@ -88,6 +93,7 @@ import tablesRouter from "../components/administrador/routers/router.vue";
 import tablesTrayecto from "../components/administrador/routerInfo/routerInfo.vue"
 import tarifaGlobal from "../components/administrador/tarifas/global.vue";
 import tarifaLocal from "../components/administrador/tarifas/local.vue";
+import customer from "../components/recepcionistas/cliente.vue"
 export default {
   data() {
     return {
@@ -117,7 +123,9 @@ export default {
       }else if(componentName === "tableRouter"){
         this.use = tablesRouter;
       }else if(componentName === "tablesTrayecto"){
-        this.use = tablesTrayecto
+        this.use = tablesTrayecto;
+      }else if(componentName === "customer"){
+        this.use = customer;
       }
     },
   },
@@ -132,6 +140,7 @@ export default {
     profiles,
     tarifaGlobal,
     tarifaLocal,
+    customer,
   },
 };
 </script>

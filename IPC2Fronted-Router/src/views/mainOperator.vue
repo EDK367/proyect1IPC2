@@ -60,10 +60,16 @@
           >
           </v-list-item>
           <v-list-item
-            prepend-icon="mdi-account"
+            prepend-icon="mdi-account-cog"
             title="Customer"
             value="customer"
             @click="changeComponent('customer')"
+          ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-account-cash"
+            title="Local Rate"
+            value="local"
+            @click="changeComponent('local')"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-ballot-outline"
@@ -86,7 +92,8 @@ import routerInfo from "../components/operadores/pointsAndRouter/routerInfo.vue"
 import pedidos from "../components/operadores/order/pedidosOp.vue";
 import paquetes from "../components/operadores/order/package.vue";
 import customer from "../components/recepcionistas/cliente.vue";
-import entregado from "../components/operadores/order/entregado.vue"
+import entregado from "../components/operadores/order/entregado.vue";
+import local from "../components/operadores/tarifaLocal/local.vue";
 export default {
   data() {
     return {
@@ -117,6 +124,8 @@ export default {
         this.use = customer;
       }else if(componentName === "entregado"){
         this.use = entregado;
+      }else if(componentName === "local"){
+        this.use = local;
       }
     },
   },
@@ -131,6 +140,7 @@ export default {
     paquetes,
     customer,
     entregado,
+    local,
   },
 };
 </script>

@@ -46,7 +46,6 @@
                 :rules="[rules.required]"
                 label="Operator*"
                 type="number"
-                disabled
                 required
               ></v-text-field>
             </v-col>

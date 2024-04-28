@@ -12,10 +12,20 @@
         ></v-btn>
       </template>
 
-      <v-card prepend-icon="mdi-account" title="User Admin">
+      <v-card prepend-icon="mdi-account" title="User Recepcion">
         <v-card-text>
           <v-row dense>
             <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                v-model="idRecepcionista"
+                :rules="[rules.required]"
+                label="ID*"
+                type="number"
+                disabled
+                required
+              ></v-text-field>
+            </v-col>
+             <v-col cols="12" md="4" sm="6">
               <v-text-field
                 v-model="idOperator"
                 :rules="[rules.required]"
@@ -88,6 +98,7 @@
             text="Save"
             variant="tonal"
             :disabled="
+              !idRecepcionista ||
               !idOperator ||
               !nombre ||
               !apellido ||
@@ -123,7 +134,6 @@
            El correo electronico ya existe en otro usuario
            <br>
            Ya no exise el usuario Seleccionado
-
            <br>
            Si los problemas persisten por favor comunicarse con un administrador
           </div>
@@ -141,6 +151,7 @@ export default {
   data: () => ({
     sheet: false,
     dialog: false,
+    idRecepcionista: "",
     idOperator: "",
     nombre: "",
     apellido: "",
@@ -166,6 +177,7 @@ export default {
     cargaDatos() {
       const optionUser = JSON.parse(localStorage.getItem("optionUser"));
       if (optionUser) {
+        this.idRecepcionista = optionUser.cuiRecepcionista;
         this.idOperator = optionUser.cuiOperador;
         this.nombre = optionUser.nombre;
         this.apellido = optionUser.apellido;
@@ -173,6 +185,7 @@ export default {
         this.contraseña = optionUser.contraseña;
       } else {
         // Si no hay datos en el localStorage
+        this.idRecepcionista = "";
         this.idOperator = "";
         this.nombre = "";
         this.apellido = "";
@@ -191,6 +204,7 @@ export default {
 
     submitForm() {
       const update = {
+        cuiRecepcionista: this.idRecepcionista,
         cuiOperador: this.idOperator,
         nombre: this.nombre,
         apellido: this.apellido,
@@ -201,7 +215,7 @@ export default {
       console.log(update);
 
       axios
-      .put("http://localhost:8080/backendIPC2/api/operador", update)
+      .put("http://localhost:8080/backendIPC2/api/recepcion", update)
       .then((response) => {
         console.log(response.data)
         if(Object.keys(response.data).length > 0){
