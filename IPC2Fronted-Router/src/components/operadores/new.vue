@@ -196,6 +196,7 @@ export default {
         .then((response) => {
           console.log(response.data);
           if (Object.keys(response.data).length > 0) {
+            this.clearTextFields();
             console.log("Usuario creado exitosamente");
             this.dialog = false;
           } else {

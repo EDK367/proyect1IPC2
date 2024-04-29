@@ -8,6 +8,7 @@
           text="New Local Rate"
           variant="tonal"
           v-bind="activatorProps"
+          @click="cargaDatos()"
         ></v-btn>
       </template>
 
@@ -179,6 +180,7 @@ export default {
       .then((response)=> {
         if(Object.keys(response.data).length > 0){
             this.dialog = false;
+            this.clearTextFields();
             console.log("Tarifa Local creado exitosamente");
         }else{
             this.sheet = true;

@@ -37,6 +37,7 @@
                 v-model="idOperator"
                 :rules="[rules.required]"
                 label="Charge Operator*"
+                type="number"
                 required
               ></v-text-field>
             </v-col>
@@ -153,7 +154,7 @@ export default {
       .then((response) => {
         if(Object.keys(response.data).length > 0){
         this.dialog = false;
-        this.clearTextFields
+        this.clearTextFields();
         console.log(response.data)
         }else{
           this.sheet = true;

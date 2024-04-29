@@ -35,7 +35,7 @@
 
           <v-list-item
             prepend-icon=" mdi-boom-gate-alert"
-            title="Router Info"
+            title="Info Router"
             value="info"
             @click="changeComponent('routerInfo')"
           ></v-list-item>

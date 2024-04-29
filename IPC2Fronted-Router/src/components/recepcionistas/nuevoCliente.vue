@@ -8,6 +8,7 @@
           text="New Customer"
           variant="tonal"
           v-bind="activatorProps"
+          @click="cargaDatos()"
         ></v-btn>
       </template>
 
@@ -114,9 +115,11 @@
           <br />
 
           <div>
-            There was an error creating the new route. Please check the data.
+            There was an error creating the new Customer. Please check the data.
             <br />
-            Possible errors: ID of the route already used
+            Possible errors: ID no Coincide Operator and Receptionist or
+            <br>
+            Customer existent
             <br />
           </div>
         </v-card-text>

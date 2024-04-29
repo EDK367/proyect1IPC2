@@ -203,6 +203,7 @@ export default {
             if (Object.keys(response.data).length > 0) {
               console.log("Usuario creado exitosamente");
               this.dialog = false;
+              this.clearTextFields();
             } else {
               console.log("No se pudo crear");
               this.sheet = true;
@@ -221,6 +222,7 @@ export default {
             if (Object.keys(response.data).length > 0) {
               console.log("Usuario creado exitosamente");
               this.dialog = false;
+              this.clearTextFields();
             } else {
               console.log("No se pudo crear");
               this.sheet = true;

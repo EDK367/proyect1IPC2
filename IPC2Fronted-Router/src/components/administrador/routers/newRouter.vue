@@ -167,7 +167,7 @@ export default {
       .then((response) => {
         if(Object.keys(response.data).length > 0){
         this.dialog = false;
-        this.clearTextFields
+        this.clearTextFields();
         console.log(response.data)
         }else{
           this.sheet = true;

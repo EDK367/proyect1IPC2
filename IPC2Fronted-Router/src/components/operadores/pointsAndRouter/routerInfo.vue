@@ -8,7 +8,9 @@
       <input type="text" v-model="searchTerm" placeholder="Search Router.">
       </div>
       <v-table height="400px" fixed-header>
-
+<div class="new2">
+          <activete />
+        </div>
         
         <thead> 
           <tr>
@@ -16,6 +18,7 @@
             <th class="text-left">ID Controller</th>
             <th class="text-left">Position</th>
             <th class="text-left">Activete</th>
+             <th class="text-left">Options</th>
           </tr>
         </thead>
         <tbody>
@@ -27,7 +30,16 @@
                 {{ trayecto.activete ? 'mdi-flag-checkered' : 'mdi-flag-remove' }}
               </v-icon>
               </td>
-          
+          <td>
+              <v-btn
+                @click="option(trayecto)"
+                prepend-icon="$vuetify"
+                variant="text"
+              >
+                SELECT
+              </v-btn>
+             
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -48,7 +60,7 @@
 
 <script>
 import axios from "axios";
-
+import activete from "./activation.vue"
 
 export default {
   data() {
@@ -60,7 +72,7 @@ export default {
     };
   },
   components: {
-
+    activete,
   },
   mounted() {
     this.obtenerTrayecto();
@@ -123,6 +135,11 @@ export default {
   top: 90px;
   position: absolute;
   left: 10;
+}
+.new2 {
+  top: 90px;
+  position: absolute;
+  right: 00px;
 }
 .deletes {
   top: 90px;

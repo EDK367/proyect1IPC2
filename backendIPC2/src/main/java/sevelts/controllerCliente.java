@@ -121,8 +121,9 @@ public class controllerCliente extends HttpServlet {
             rsVerification = psVerification.executeQuery();
 
             if (rsVerification.next()) {
-                response.getWriter().print("Error, el cliente ya existe en la base de datos");
-
+              //  response.getWriter().print("Error, el cliente ya existe en la base de datos");
+                objeto = new JsonObject();
+                response.getWriter().print(objeto);
             } else {
                 String sqlrecepcionista = "SELECT * FROM recepcionista WHERE cui_operador = ? AND cui_recepcionista = ?";
                 PreparedStatement psOperador = connection.prepareStatement(sqlrecepcionista);
@@ -145,12 +146,14 @@ public class controllerCliente extends HttpServlet {
 
 
                 } else {
-                    response.getWriter().print("Error, el operador o recepcionista no existe en la base de datos");
+                    objeto = new JsonObject();
+                    response.getWriter().print(objeto);
+                   // response.getWriter().print("Error, el operador o recepcionista no existe en la base de datos");
                 }
             }
 
         } catch (SQLException ex) {
-            response.getWriter().print("Error en la creacion, puede que el recepcionista no trabaje con ese operador " + ex);
+            //response.getWriter().print("Error en la creacion, puede que el recepcionista no trabaje con ese operador " + ex);
         } finally {
             if (rsVerification != null) {
                 rsVerification.close();

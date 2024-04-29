@@ -14,23 +14,35 @@
       <v-card prepend-icon="mdi-account" title="New Journey">
         <v-card-text>
           <v-row dense>
-            <v-col cols="12" md="4" sm="6">
-              <v-text-field
-                v-model="idRuta"
-                :rules="[rules.required]"
-                label="ID Router*"
-                type="number"
-                required
-              ></v-text-field>
-            </v-col>
              <v-col cols="12" md="4" sm="6">
-              <v-text-field
+              <v-select
+                v-model="idRuta"
+                :items="rutas"
+                item-title="idRuta"
+                label="ID Router"
+              >
+                <template v-slot:item="{ props, item }">
+                  <v-list-item
+                    v-bind="props"
+                    :subtitle="item.raw.department"
+                  ></v-list-item>
+                </template>
+              </v-select>
+            </v-col>
+            <v-col cols="12" md="4" sm="6">
+              <v-select
                 v-model="idControl"
-                :rules="[rules.required]"
-                label="ID Controller*"
-                type="number"
-                required
-              ></v-text-field>
+                :items="bodegasDisponibles"
+                item-title="idBodega"
+                label="Destination Warehouse"
+              >
+                <template v-slot:item="{ props, item }">
+                  <v-list-item
+                    v-bind="props"
+                    :subtitle="item.raw.department"
+                  ></v-list-item>
+                </template>
+              </v-select>
             </v-col>
 
             <v-col cols="12" md="4" sm="6">
@@ -122,6 +134,8 @@ export default {
     rules: {
       required: (value) => !!value || "Field is required",
     },
+     bodegasDisponibles: [],
+     rutas: [],
     showBottomSheet: false,
   }),
 
@@ -156,7 +170,7 @@ export default {
       .then((response) => {
         if(Object.keys(response.data).length > 0){
         this.dialog = false;
-        this.clearTextFields
+        this.clearTextFields();
         console.log(response.data)
         }else{
           this.sheet = true;
@@ -166,8 +180,35 @@ export default {
             console.error("Error al enviar la solicitud:", error);
 
           });
-    }
+    },
+    cargarBodegas() {
+      axios
+        .get("http://localhost:8080/backendIPC2/api/bodegaOption")
+        .then((responses) => {
+          this.bodegasDisponibles = responses.data;
+          console.log(this.bodegasDisponibles);
+        })
+        .catch((error) => {
+          console.error("Error loading warehouses:", error);
+        });
+    },
+     cargarRutas() {
+      axios
+        .get("http://localhost:8080/backendIPC2/api/router")
+        .then((respon) => {
+          this.rutas = respon.data;
+          console.log(this.rutas);
+        })
+        .catch((error) => {
+          console.error("Error loading warehouses:", error);
+        });
+    },
   },
+   mounted() {
+    this.cargarBodegas();
+    this.cargarRutas();
+  },
+  
 };
 </script>
 

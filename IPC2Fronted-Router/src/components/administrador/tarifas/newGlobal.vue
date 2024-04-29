@@ -28,7 +28,7 @@
             <v-col cols="12" md="4" sm="6">
               <v-text-field
                 v-model="idGlobal"
-                label="Global Rate ID*"
+                label="Global Rate ID INCREMENT DATA*"
                 disabled
               ></v-text-field>
             </v-col>
@@ -47,7 +47,7 @@
               <v-text-field
                 v-model="date"
                 :rules="[rules.required]"
-                label="date*"
+                label="YY-MM-DD*"
                 required
               ></v-text-field>
             </v-col>
@@ -181,6 +181,7 @@ export default {
         if(Object.keys(response.data).length > 0){
             this.dialog = false;
             console.log("Tarifa global creado exitosamente");
+            this.clearTextFields();
         }else{
             this.sheet = true;
         }
